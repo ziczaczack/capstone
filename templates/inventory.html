@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Inventory</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+        <a class="navbar-brand" href="/">Cafe Inventory</a>
+        <div class="navbar-nav">
+            <a class="nav-link" href="/products">Products</a>
+            <a class="nav-link" href="/inventory">Inventory</a>
+            <a class="nav-link" href="/recipes">Recipes</a>
+        </div>
+    </nav>
+    <div class="container mt-4">
+        <h1>Inventory</h1>
+        <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addInventoryModal">Add Inventory</button>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>SKU</th>
+                    <th>Standard Name</th>
+                    <th>Brand Name</th>
+                    <th>Unit</th>
+                    <th>Unit Cost</th>
+                    <th>Is Active</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in inventory %}
+                <tr>
+                    <td>{{ item.id }}</td>
+                    <td>{{ item.sku }}</td>
+                    <td>{{ item.standard_name }}</td>
+                    <td>{{ item.brand_name }}</td>
+                    <td>{{ item.unit }}</td>
+                    <td>{{ item.unit_cost }}</td>
+                    <td>{{ "Yes" if item.is_active else "No" }}</td>
+                    <td>
+                        <button class="btn btn-warning btn-sm">Edit</button>
+                        <button class="btn btn-danger btn-sm">Delete</button>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Modal for adding inventory -->
+        <div class="modal fade" id="addInventoryModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Add Inventory</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="/inventory" method="POST">
+                            <div class="mb-3">
+                                <label class="form-label">SKU</label>
+                                <input type="text" class="form-control" name="sku" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Standard Name</label>
+                                <input type="text" class="form-control" name="standard_name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Brand Name</label>
+                                <input type="text" class="form-control" name="brand_name">
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Unit</label>
+                                <input type="text" class="form-control" name="unit" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Unit Cost</label>
+                                <input type="number" step="0.01" class="form-control" name="unit_cost" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Is Active</label>
+                                <select class="form-control" name="is_active">
+                                    <option value="1">Yes</option>
+                                    <option value="0">No</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

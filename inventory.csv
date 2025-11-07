@@ -1,0 +1,43 @@
+﻿id,SKU,standard_name,brand_name,unit,unit_cost,is_active,supplier_id,category
+1,CF-BEAN,Coffee Bean,Ghostbird,g,0.095,1,1,
+2,MLK-FARM,Milk,farm fresh,g,0.00713,1,1,
+3,SYR-SIMPLE,Simple Syrup,(Homemade),g,0.022,1,1,
+4,CHOC-545,Chocolate 54.5%,Callebaut,g,0.936,1,1,
+5,CHOC-705,Chocolate 70.5%,Callebaut,g,0.1088,1,1,
+6,MLK-OAT,Oat Milk,Oatside,g,0.009,1,1,
+7,MLK-CDENSED,Condensed Milk,F&N,g,0.00636,1,1,
+8,SYR-STRAWBERRY,Strawberry Syrup,MONT,g,0.0564,1,1,Flavour Syrup
+9,SYR-PINEAPPLE,Pineapple Syrup,MONT,g,0.0564,1,1,Flavour Syrup
+10,SYR-YUZU,Yuzu Syrup,MONT,g,0.06,1,1,Flavour Syrup
+11,SYR-SEASALT,Sea Salted Caramel Syrup,MONT,g,0.0564,1,1,Flavour Syrup
+12,SYR-R.HAZELNUT,Roasted Hazelnut Syrup,MONT,g,0.0564,1,1,Flavour Syrup
+13,SYR-GRENADINE,Grenadine Syrup,MONT,g,0.0564,1,1,Flavour Syrup
+14,SYR-HONEY,Honey Syrup,MONT,g,0.0564,1,1,Flavour Syrup
+15,SYR-VANILLA,Vanilla Syrup,MONT,g,0.0564,1,1,Flavour Syrup
+16,MATCHA-POW,Matcha Powder,"Yamama Masudaen CO.,LTD.",g,0.238,1,1,
+17,COCOA-POW,Chocolate Powder,Callebaut,g,0.06818,1,1,
+18,MASCARPONE,Cream,Elle & Vire,g,0.049,1,1,
+19,LADY-FINGER,Lady Finger,Gastone Lago,nos,0.295,1,1,
+20,EARL-GREY,Tea Powder,JING,TB,1.85,1,1,
+21,ENG-BREAKFAST,Tea Powder,JING,TB,1.85,1,1,
+22,JADE-SWORD,Tea Powder,JING,TB,1.7,1,1,
+23,CHAMOMILE,Tea Powder,JING,TB,2.5,1,1,
+24,BLKCURRANT-HIBCUS,Tea Powder,JING,TB,2.5,1,1,
+25,LEMON-JUICE,Lemon Juice,SECAI MARCHE,g,0.0467,1,1,
+26,LEMON-WEDGE,Lemon Wedge,,nos,0.0583,,,
+27,LIME-JUICE,Lime Juice,SECAI MARCHE,g,0.007523,1,1,
+28,ORANGE,Orange,,nos,1.4,,,
+29,ORANGE-JUICE,Orange Juice,SECAI MARCHE,g,0.014,1,1,
+30,MINT,Mint,SECAI MARCHE,nos,0.0079,1,1,
+31,ORANGE-DRIED,Dried Orange,Shopee,pc,0.3966,1,1,
+32,SODA-WATER,Soda Water,Soda Express,g,0.22,1,1,
+33,BUTTERFLY-PEA-FLOWER,Butterfly Pea Flower,Shopee,g,0.135,1,1,
+34,SOCHOC-KELANTAN,Chocolate kelantan,Chocolate Concierge ,g,0.145,1,1,SO Chocolate
+35,SOCHOC-PAHANG,Chocolate pahang,Chocolate Concierge ,g,0.145,1,1,SO Chocolate
+36,SYR-PEACH,Syrup,Tehmag,slice,0.15,1,1,
+37,TEA-CEYLON,Tea Powder,888,g,0.018,1,1,
+38,STRAWBERRY,Strawberry ,Dirafrost ,g,0.025,1,1,
+39,BLACKTEA-BASE,Black Tea Base,(Tealeaf + Brown Sugar + Water),g,0.00107,1,1,
+40,BUTTERFLY-FLOWER-SYR,Butterfly pea Flower Syrup,(Butterfly Pea Flower + Water + Sugar),g,0.002397,1,1,
+41,BROWN-SUGAR,Brown Sugar,SECAI MARCHE,g,0.007,1,1,
+42,STRAWBERRY-COMPOTE,Strawberry Compote,(Lemon + Strawberry + Suagr),g,0.0325,1,1,

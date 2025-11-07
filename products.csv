@@ -1,0 +1,26 @@
+﻿ID,Category,Product_Name,Description
+1,Coffee ,Double Shot Espresso,
+2,Coffee ,Piccolo Latte ,Small cafe latte
+3,Coffee ,Americano,
+4,Coffee ,Flat White/Latte/Cappucino,
+5,Coffee ,Cafe Latte,
+6,Coffee ,Flavoured Latte,Options: Vanilla or Roasted Hazelnut or Sea Salt Caramel
+7,Coffee ,Cappucino,
+8,Specialty Coffee,Espresso Tonic,"Double shot espresso, Lemon Juice, Soda"
+9,Specialty Coffee,Orange Americano,"Double shot espresso, Fresh Orange Juice, Simple Syrup"
+10,Specialty Coffee,Spanish Latte,"Double shot espresso, Sweetened Milk"
+11,Specialty Coffee,Tiramisu Latte,"Double shot espresso, Mascarpone Cream Topping"
+12,Specialty Coffee,Affogato,"Gelato, Double shot espresso"
+13,Tea,Jing Earl Grey ,
+14,Tea,Jing English Breakfast,
+15,Tea,Jing Jade Sword,
+16,Tea,Jing Chamomile,
+17,Non-Coffee,Signature Chocolate,Blend of 70.5% and 54.5% Callebaut Belgian Chocolate
+18,Non-Coffee,Single Origin Chocolate ,"Options: Kelantan COE or Triang, Pahang "
+19,Non-Coffee,Matcha Latte ,Yamama Masudaen Ceremonial Grade
+20,Non-Coffee,Strawberry Matcha Latte,"Matcha, Housemade Strawberry Compote, Milk"
+21,Non-Coffee,Babycinno,Steamed Fresh Milk (Options: Vanilla or Roasted Hazelnut or Sea Salt Caramel or Strawberry)
+22,Cold Refreshments ,Fresh Orange Juice,"250ml Pure Chilled Fresh Orange Juice, No Sugar, No Ice"
+23,Cold Refreshments ,Peach Mint Tea,"Iced Shaken Black Tea, Peach, Lime, Mint"
+24,Signature Mocktails ,Tropical Pine Sunrise,"Pineapple, Orange, Grenadine"
+25,Signature Mocktails ,Cosmic Lemonade,"Yuzu, Lime, Honey, Butterfly Pea Flower"
