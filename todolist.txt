@@ -1,0 +1,12 @@
+#Add Timed Checks: Use APScheduler to run /check_low_stock automatically every hour (no manual access needed).
+Install: pip install apscheduler
+Code snippet for app.py:pythonfrom apscheduler.schedulers.background import BackgroundScheduler
+
+scheduler = BackgroundScheduler()
+scheduler.add_job(check_low_stock, 'interval', hours=1)  # Run every hour
+scheduler.start()
+
+#Improve Dashboard: Add charts (e.g., using Chart.js) to visualize low-stock items as a bar graph (current vs threshold).
+#User Roles/Login: Add basic authentication (Flask-Login) so only the boss sees reports/notifications.
+#Purchase Orders: Create a /purchases page to record incoming stock from suppliers, increasing current_stock.
+#Deployment: Host on Heroku/Vercel for the cafe owner to access remotely (free tier OK for diploma project).

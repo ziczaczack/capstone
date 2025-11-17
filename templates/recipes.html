@@ -11,12 +11,15 @@
             <a class="nav-link" href="/products">Products</a>
             <a class="nav-link" href="/inventory">Inventory</a>
             <a class="nav-link" href="/recipes">Recipes</a>
+            <a class="nav-link" href="/suppliers">Suppliers</a>
+            <a class="nav-link" href="/transactions">Transactions</a>
+            <a class="nav-link" href="/logout">Logout</a>
         </div>
     </nav>
     <div class="container mt-4">
         <h1>Recipes</h1>
         <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addRecipeModal">Add Recipe</button>
-        <table class="table">
+        <table class="table" id="recipesTable">
             <thead>
                 <tr>
                     <th>ID</th>
@@ -32,12 +35,12 @@
                 <tr>
                     <td>{{ recipe.id }}</td>
                     <td>{{ recipe.product_name }}</td>
-                    <td>{{ recipe.inventory_sku }}</td>
+                    <td>{{ recipe.ingredient_sku }}</td>
                     <td>{{ recipe.usage }}</td>
                     <td>{{ recipe.unit }}</td>
                     <td>
-                        <button class="btn btn-warning btn-sm">Edit</button>
-                        <button class="btn btn-danger btn-sm">Delete</button>
+                        <button class="btn btn-warning btn-sm edit-btn" data-id="{{ recipe.id }}" data-bs-toggle="modal" data-bs-target="#editRecipeModal">Edit</button>
+                        <button class="btn btn-danger btn-sm delete-btn" data-id="{{ recipe.id }}">Delete</button>
                     </td>
                 </tr>
                 {% endfor %}
@@ -53,7 +56,7 @@
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <form action="/recipes" method="POST">
+                        <form id="addRecipeForm">
                             <div class="mb-3">
                                 <label class="form-label">Product Name</label>
                                 <input type="text" class="form-control" name="product_name" required>
@@ -76,7 +79,116 @@
                 </div>
             </div>
         </div>
+
+        <!-- Modal for editing recipe -->
+        <div class="modal fade" id="editRecipeModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Recipe</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="editRecipeForm">
+                            <input type="hidden" id="editRecipeId">
+                            <div class="mb-3">
+                                <label class="form-label">Product Name</label>
+                                <input type="text" class="form-control" id="editProductName" name="product_name" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Ingredient SKU</label>
+                                <input type="text" class="form-control" id="editIngredientSku" name="ingredient_sku" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Usage</label>
+                                <input type="number" step="0.01" class="form-control" id="editUsage" name="usage" required>
+                            </div>
+                            <div class="mb-3">
+                                <label class="form-label">Unit</label>
+                                <input type="text" class="form-control" id="editUnit" name="unit" required>
+                            </div>
+                            <button type="submit" class="btn btn-primary">Save Changes</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // 添加配方
+            $('#addRecipeForm').on('submit', function(e) {
+                e.preventDefault();
+                $.ajax({
+                    url: '/recipes',
+                    type: 'POST',
+                    data: $(this).serialize(),
+                    success: function(response) {
+                        alert('Recipe added!');
+                        location.reload();
+                    },
+                    error: function() {
+                        alert('Error adding recipe.');
+                    }
+                });
+            });
+
+            // 编辑配方
+            $('.edit-btn').on('click', function() {
+                const id = $(this).data('id');
+                $.get(`/recipes/${id}`, function(data) {
+                    $('#editRecipeId').val(data.id);
+                    $('#editProductName').val(data.product_name);
+                    $('#editIngredientSku').val(data.ingredient_sku);
+                    $('#editUsage').val(data.usage);
+                    $('#editUnit').val(data.unit);
+                });
+            });
+
+           $('#editRecipeForm').on('submit', function(e) {
+                e.preventDefault();
+                const id = $('#editRecipeId').val();
+                const formData = $(this).serialize();
+                console.log('Sending data:', formData);
+                $.ajax({
+                    url: `/recipes/${id}`,
+                    type: 'PUT',
+                    data: formData,
+                    success: function(response) {
+                        console.log('Success:', response);
+                        alert('Recipe updated!');
+                        location.reload();
+                    },
+                    error: function(xhr) {
+                        console.log('Error:', xhr.status, xhr.responseText);
+                        alert('Error updating recipe: ' + xhr.responseText);
+                    }
+                });
+            });
+
+            // 删除配方
+            $('.delete-btn').on('click', function() {
+                if (confirm('Are you sure you want to delete this recipe?')) {
+                    const id = $(this).data('id');
+                    console.log('Deleting recipe id:', id);
+                    $.ajax({
+                        url: `/recipes/${id}`,  // 确保 URL 正确
+                        type: 'DELETE',
+                        success: function(response) {
+                            console.log('Delete success:', response);
+                            alert('Recipe deleted!');
+                            location.reload();
+                        },
+                        error: function(xhr) {
+                            console.log('Delete error:', xhr.status, xhr.responseText);
+                            alert('Error deleting recipe: ' + xhr.responseText);
+                        }
+                    });
+                }
+            });
+        });
+    </script>
 </body>
 </html>

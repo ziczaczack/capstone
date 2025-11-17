@@ -9,7 +9,7 @@ cursor = conn.cursor()
 #     cursor.executescript(f.read())
 
 # 只导入数据
-pd.read_csv('recipe.csv').to_sql('recipes', conn, if_exists='append', index=False)
+pd.read_csv('suppliers.csv').to_sql('suppliers', conn, if_exists='append', index=False)
 
 conn.close()
 print("数据库导入完成！")

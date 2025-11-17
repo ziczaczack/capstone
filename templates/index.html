@@ -11,11 +11,43 @@
             <a class="nav-link" href="/products">Products</a>
             <a class="nav-link" href="/inventory">Inventory</a>
             <a class="nav-link" href="/recipes">Recipes</a>
+            <a class="nav-link" href="/suppliers">Suppliers</a>
+            <a class="nav-link" href="/transactions">Transactions</a>
+            <a class="nav-link" href="/check_low_stock">Check Low Stock</a>
+            <a class="nav-link" href="/logout">Logout</a>
         </div>
     </nav>
     <div class="container mt-4">
         <h1>Welcome to Dashboard</h1>
         <p>Manage your cafe inventory here.</p>
+        
+        <h2>Lowest Inventory Items</h2>
+        {% if low_inventory_items %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>SKU</th>
+                    <th>Standard Name</th>
+                    <th>Current Stock</th>
+                    <th>Threshold</th>
+                    <th>Ratio (Current / Threshold)</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in low_inventory_items %}
+                <tr class="table-danger">  <!-- 红色高亮 low-stock -->
+                    <td>{{ item.sku }}</td>
+                    <td>{{ item.standard_name }}</td>
+                    <td>{{ item.current_stock }}</td>
+                    <td>{{ item.threshold }}</td>
+                    <td>{{ item.ratio | round(2) }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        {% else %}
+        <p>No low-stock items currently.</p>
+        {% endif %}
     </div>
 </body>
 </html>

@@ -95,14 +95,30 @@ def add_inventory():
 
 @app.route('/inventory/<int:id>', methods=['PUT'])
 def update_inventory(id):
-    data = request.get_json()
     conn = get_db_connection()
+    if conn is None:
+        return jsonify({'error': 'Database connection failed'}), 500
     cursor = conn.cursor()
-    cursor.execute('UPDATE inventory SET sku = ?, standard_name = ?, brand_name = ?, unit = ?, unit_cost = ?, is_active = ?, supplier_id = ? WHERE id = ?',
-                   (data['sku'], data['standard_name'], data['brand_name'], data['unit'], data['unit_cost'], data['is_active'], data.get('supplier_id'), id))
-    conn.commit()
-    conn.close()
-    return jsonify({'message': 'Inventory updated'})
+    data = request.form
+    print(f"Received data for update id {id}: {data}")  # 调试
+    try:
+        cursor.execute('UPDATE inventory SET sku = ?, standard_name = ?, brand_name = ?, unit = ?, unit_cost = ?, is_active = ? WHERE id = ?',
+                       (data.get('sku'), data.get('standard_name'), data.get('brand_name'), data.get('unit'), 
+                        float(data.get('unit_cost', 0)), int(data.get('is_active', 0)), id))
+        conn.commit()
+        print(f"Updated inventory id {id} successfully")
+        if cursor.rowcount == 0:
+            return jsonify({'error': 'Inventory not found'}), 404
+        return jsonify({'message': 'Inventory updated'}), 200
+    except ValueError as ve:
+        print(f"Value error: {ve}")  # 转换错误
+        return jsonify({'error': f'Invalid data: {ve}'}), 400
+    except sqlite3.Error as e:
+        print(f"Update error: {e}")
+        conn.rollback()
+        return jsonify({'error': f'Update failed: {e}'}), 400
+    finally:
+        conn.close(
 
 @app.route('/inventory/<int:id>', methods=['DELETE'])
 def delete_inventory(id):

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Products</title>
+    <title>Suppliers</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <body>
@@ -17,55 +17,55 @@
         </div>
     </nav>
     <div class="container mt-4">
-        <h1>Products</h1>
-        <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addProductModal">Add Product</button>
-        <table class="table" id="productsTable">
+        <h1>Suppliers</h1>
+        <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addSupplierModal">Add Supplier</button>
+        <table class="table">
             <thead>
                 <tr>
                     <th>ID</th>
-                    <th>Category</th>
-                    <th>Product Name</th>
-                    <th>Description</th>
+                    <th>Company Name</th>
+                    <th>Contact Person</th>
+                    <th>Phone</th>
                     <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
-                {% for product in products %}
+                {% for supplier in suppliers %}
                 <tr>
-                    <td>{{ product.id }}</td>
-                    <td>{{ product.category }}</td>
-                    <td>{{ product.product_name }}</td>
-                    <td>{{ product.description }}</td>
+                    <td>{{ supplier.id }}</td>
+                    <td>{{ supplier.company_name }}</td>
+                    <td>{{ supplier.contact_person }}</td>
+                    <td>{{ supplier.phone }}</td>
                     <td>
-                        <button class="btn btn-warning btn-sm edit-btn" data-id="{{ product.id }}" data-bs-toggle="modal" data-bs-target="#editProductModal">Edit</button>
-                        <button class="btn btn-danger btn-sm delete-btn" data-id="{{ product.id }}">Delete</button>
+                        <button class="btn btn-warning btn-sm edit-btn" data-id="{{ supplier.id }}" data-bs-toggle="modal" data-bs-target="#editSupplierModal">Edit</button>
+                        <button class="btn btn-danger btn-sm delete-btn" data-id="{{ supplier.id }}">Delete</button>
                     </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
 
-        <!-- Modal for adding product -->
-        <div class="modal fade" id="addProductModal" tabindex="-1">
+        <!-- Add Modal -->
+        <div class="modal fade" id="addSupplierModal" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Add Product</h5>
+                        <h5 class="modal-title">Add Supplier</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <form id="addProductForm">
+                        <form id="addSupplierForm">
                             <div class="mb-3">
-                                <label class="form-label">Category</label>
-                                <input type="text" class="form-control" name="category" required>
+                                <label class="form-label">Company Name</label>
+                                <input type="text" class="form-control" name="company_name" required>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">Product Name</label>
-                                <input type="text" class="form-control" name="product_name" required>
+                                <label class="form-label">Contact Person</label>
+                                <input type="text" class="form-control" name="contact_person">
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">Description</label>
-                                <input type="text" class="form-control" name="description">
+                                <label class="form-label">Phone</label>
+                                <input type="text" class="form-control" name="phone">
                             </div>
                             <button type="submit" class="btn btn-primary">Save</button>
                         </form>
@@ -74,28 +74,27 @@
             </div>
         </div>
 
-        <!-- Modal for editing product -->
-        <div class="modal fade" id="editProductModal" tabindex="-1">
+        <div class="modal fade" id="editSupplierModal" tabindex="-1">
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Edit Product</h5>
+                        <h5 class="modal-title">Edit Supplier</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                     </div>
                     <div class="modal-body">
-                        <form id="editProductForm">
-                            <input type="hidden" id="editProductId">
+                        <form id="editSupplierForm">
+                            <input type="hidden" id="editSupplierId">
                             <div class="mb-3">
-                                <label class="form-label">Category</label>
-                                <input type="text" class="form-control" id="editCategory" name="category" required>
+                                <label class="form-label">Company Name</label>
+                                <input type="text" class="form-control" id="editCompanyName" name="company_name" required>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">Product Name</label>
-                                <input type="text" class="form-control" id="editProductName" name="product_name" required>
+                                <label class="form-label">Contact Person</label>
+                                <input type="text" class="form-control" id="editContactName" name="contact_person" required>
                             </div>
                             <div class="mb-3">
-                                <label class="form-label">Description</label>
-                                <input type="text" class="form-control" id="editDescription" name="description">
+                                <label class="form-label">Phone</label>
+                                <input type="text" class="form-control" id="editPhone" name="phone">
                             </div>
                             <button type="submit" class="btn btn-primary">Save Changes</button>
                         </form>
@@ -109,18 +108,18 @@
     <script>
         $(document).ready(function() {
             // 添加产品
-            $('#addProductForm').on('submit', function(e) {
+            $('#addSupplierForm').on('submit', function(e) {
                 e.preventDefault();
                 $.ajax({
-                    url: '/products',
+                    url: '/suppliers',
                     type: 'POST',
                     data: $(this).serialize(),
                     success: function(response) {
-                        alert('Product added!');
+                        alert('Supplier added!');
                         location.reload();
                     },
                     error: function() {
-                        alert('Error adding product.');
+                        alert('Error adding supplier.');
                     }
                 });
             });
@@ -128,48 +127,48 @@
             // 编辑产品
             $('.edit-btn').on('click', function() {
                 const id = $(this).data('id');
-                $('#editProductId').val(id);
+                $('#editSupplierId').val(id);
                 // 填充模态窗数据（假设已有逻辑）
-                $('#editProductModal').modal('show');
+                $('#editSupplierModal').modal('show');
             });
 
-            $('#editProductForm').on('submit', function(e) {
+            $('#editSupplierForm').on('submit', function(e) {
                 e.preventDefault();
-                const id = $('#editProductId').val();
+                const id = $('#editSupplierId').val();
                 const formData = $(this).serialize();
                 console.log('Sending update data:', formData);
                 $.ajax({
-                    url: `/products/${id}`,
+                    url: `/suppliers/${id}`,
                     type: 'PUT',
                     data: formData,
                     success: function(response) {
                         console.log('Update success:', response);
-                        alert(response.message || 'Product updated!');
+                        alert(response.message || 'Supplier updated!');
                         location.reload();
                     },
                     error: function(xhr) {
                         console.log('Update error:', xhr.status, xhr.responseText);
-                        alert('Error updating product: ' + xhr.responseText);
+                        alert('Error updating supplier: ' + xhr.responseText);
                     }
                 });
             });
 
             // 删除产品
             $('.delete-btn').on('click', function() {
-                if (confirm('Are you sure you want to delete this product?')) {
+                if (confirm('Are you sure you want to delete this supplier?')) {
                     const id = $(this).data('id');
-                    console.log('Deleting product id:', id);
+                    console.log('Deleting supplier id:', id);
                     $.ajax({
-                        url: `/products/${id}`,  // 确保 URL 正确
+                        url: `/suppliers/${id}`, 
                         type: 'DELETE',
                         success: function(response) {
                             console.log('Delete success:', response);
-                            alert(response.message || 'Product deleted!');
+                            alert(response.message || 'Supplier deleted!');
                             location.reload();
                         },
                         error: function(xhr) {
                             console.log('Delete error:', xhr.status, xhr.responseText);
-                            alert('Error deleting product: ' + xhr.responseText);
+                            alert('Error deleting supplier: ' + xhr.responseText);
                         }
                     });
                 }
