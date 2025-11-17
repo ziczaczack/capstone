@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+
+{% block title %}User Profile - Cafe Inventory{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm mt-5">
+                <div class="card-header bg-primary text-white">
+                    <h3 class="mb-0">👤 User Profile</h3>
+                </div>
+                <div class="card-body">
+                    <div class="mb-4">
+                        <h5 class="text-muted">Username</h5>
+                        <p class="h4">{{ current_user.username }}</p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5 class="text-muted">Current Role</h5>
+                        <p>
+                            <span class="role-badge {{ current_user.role.lower() }}">{{ current_user.role }}</span>
+                        </p>
+                    </div>
+
+                    <div class="mb-4">
+                        <h5 class="text-muted">User ID</h5>
+                        <p class="text-monospace">{{ current_user.id }}</p>
+                    </div>
+
+                    <hr>
+
+                    <div class="alert alert-info">
+                        <h6 class="alert-heading">Role Permissions</h6>
+                        {% if current_user.role == 'superadmin' %}
+                            <ul class="mb-0">
+                                <li>Full system access</li>
+                                <li>Create and manage users</li>
+                                <li>Manage all inventory, products, recipes, and suppliers</li>
+                                <li>View all transactions</li>
+                                <li>System administration</li>
+                            </ul>
+                        {% elif current_user.role == 'admin' %}
+                            <ul class="mb-0">
+                                <li>Manage inventory, products, recipes, and suppliers</li>
+                                <li>View and create transactions</li>
+                                <li>Generate reports</li>
+                            </ul>
+                        {% elif current_user.role == 'staff' %}
+                            <ul class="mb-0">
+                                <li>View inventory and products</li>
+                                <li>Create and manage transactions</li>
+                                <li>View recipes and suppliers</li>
+                            </ul>
+                        {% else %}
+                            <ul class="mb-0">
+                                <li>View inventory items</li>
+                                <li>Basic read-only access</li>
+                            </ul>
+                        {% endif %}
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <a href="/" class="btn btn-secondary">← Back to Dashboard</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .role-badge {
+        display: inline-block;
+        padding: 6px 16px;
+        border-radius: 20px;
+        font-size: 13px;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+    .role-badge.superadmin {
+        background-color: #dc3545;
+        color: white;
+    }
+    .role-badge.admin {
+        background-color: #007bff;
+        color: white;
+    }
+    .role-badge.staff {
+        background-color: #28a745;
+        color: white;
+    }
+    .role-badge.user {
+        background-color: #6c757d;
+        color: white;
+    }
+    .text-monospace {
+        font-family: 'Courier New', monospace;
+        background-color: #f5f5f5;
+        padding: 8px;
+        border-radius: 4px;
+    }
+</style>
+{% endblock %}

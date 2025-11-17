@@ -74,6 +74,12 @@ def logout():
     logout_user()
     return redirect(url_for('login'))
 
+# 用户资料路由
+@app.route('/profile')
+@login_required
+def profile():
+    return render_template('profile.html')
+
 # 输入验证函数
 def validate_required_fields(data, required_fields):
     missing = [field for field in required_fields if not data.get(field)]
@@ -589,8 +595,8 @@ def add_transaction():
         if current_stock < deduct:
             return jsonify({'error': f'Insufficient stock for {name} - Needed: {deduct}, Available: {current_stock}'}), 400
 
-        # 计算总成本
-        total_cost = unit_cost * quantity
+        # 计算总成本 = unit_cost * usage_per_unit * quantity
+        total_cost = unit_cost * usage_per_unit * quantity
 
         # 插入交易记录
         cursor.execute('INSERT INTO transactions (product_id, quantity, total_cost) VALUES (?, ?, ?)',

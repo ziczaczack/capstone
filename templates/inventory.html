@@ -1,232 +1,220 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Inventory</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="/">Cafe Inventory</a>
-        <div class="navbar-nav">
-            <a class="nav-link" href="/products">Products</a>
-            <a class="nav-link" href="/inventory">Inventory</a>
-            <a class="nav-link" href="/recipes">Recipes</a>
-            <a class="nav-link" href="/suppliers">Suppliers</a>
-            <a class="nav-link" href="/transactions">Transactions</a>
-            <a class="nav-link" href="/logout">Logout</a>
-        </div>
-    </nav>
-    <div class="container mt-4">
-        <h1>Inventory</h1>
-        <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addInventoryModal">Add Inventory</button>
-        <table class="table" id="inventoryTable">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>SKU</th>
-                    <th>Standard Name</th>
-                    <th>Brand Name</th>
-                    <th>Current Stock</th>
-                    <th>Low Stock</th>
-                    <th>Unit</th>
-                    <th>Unit Cost</th>
-                    <th>Is Active</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in inventory %}
-                <tr>
-                    <td>{{ item.id }}</td>
-                    <td>{{ item.sku }}</td>
-                    <td>{{ item.standard_name }}</td>
-                    <td>{{ item.brand_name }}</td>
-                    <td>{{ item.current_stock }}</td>
-                    <td>{{ "Yes" if item.low_stock else "No" }}</td>
-                    <td>{{ item.unit }}</td>
-                    <td>{{ item.unit_cost }}</td>
-                    <td>{{ "Yes" if item.is_active else "No" }}</td>
-                    <td>
-                        <button class="btn btn-warning btn-sm edit-btn" data-id="{{ item.id }}" data-bs-toggle="modal" data-bs-target="#editInventoryModal">Edit</button>
-                        <button class="btn btn-danger btn-sm delete-btn" data-id="{{ item.id }}">Delete</button>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+{% extends "base.html" %}
 
-        <!-- Modal for adding inventory -->
-        <div class="modal fade" id="addInventoryModal" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Add Inventory</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="addInventoryForm">
-                            <div class="mb-3">
-                                <label class="form-label">SKU</label>
-                                <input type="text" class="form-control" name="sku" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Standard Name</label>
-                                <input type="text" class="form-control" name="standard_name" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Brand Name</label>
-                                <input type="text" class="form-control" name="brand_name">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Current Stock</label>
-                                <input type="number" class="form-control" id="editCurrentStock" name="current_stock" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Unit</label>
-                                <input type="text" class="form-control" name="unit" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Unit Cost</label>
-                                <input type="number" step="0.00001" class="form-control" name="unit_cost" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Is Active</label>
-                                <select class="form-control" name="is_active">
-                                    <option value="1">Yes</option>
-                                    <option value="0">No</option>
-                                </select>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Save</button>
-                        </form>
-                    </div>
+{% block title %}Inventory - Cafe Inventory{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1>Inventory</h1>
+    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addInventoryModal">Add Inventory</button>
+    <table class="table" id="inventoryTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>SKU</th>
+                <th>Standard Name</th>
+                <th>Brand Name</th>
+                <th>Current Stock</th>
+                <th>Low Stock</th>
+                <th>Unit</th>
+                <th>Unit Cost</th>
+                <th>Is Active</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for item in inventory %}
+            <tr>
+                <td>{{ item.id }}</td>
+                <td>{{ item.sku }}</td>
+                <td>{{ item.standard_name }}</td>
+                <td>{{ item.brand_name }}</td>
+                <td>{{ item.current_stock }}</td>
+                <td>{{ "Yes" if item.low_stock else "No" }}</td>
+                <td>{{ item.unit }}</td>
+                <td>{{ item.unit_cost }}</td>
+                <td>{{ "Yes" if item.is_active else "No" }}</td>
+                <td>
+                    <button class="btn btn-warning btn-sm edit-btn" data-id="{{ item.id }}" data-bs-toggle="modal" data-bs-target="#editInventoryModal">Edit</button>
+                    <button class="btn btn-danger btn-sm delete-btn" data-id="{{ item.id }}">Delete</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Modal for adding inventory -->
+    <div class="modal fade" id="addInventoryModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Inventory</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-            </div>
-        </div>
-
-        <!-- Modal for editing inventory -->
-        <div class="modal fade" id="editInventoryModal" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Edit Inventory</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="editInventoryForm">
-                            <input type="hidden" id="editInventoryId">
-                            <div class="mb-3">
-                                <label class="form-label">SKU</label>
-                                <input type="text" class="form-control" id="editSku" name="sku" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Standard Name</label>
-                                <input type="text" class="form-control" id="editStandardName" name="standard_name" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Brand Name</label>
-                                <input type="text" class="form-control" id="editBrandName" name="brand_name">
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Current Stock</label>
-                                <input type="number" class="form-control" id="editCurrentStock" name="current_stock" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Unit</label>
-                                <input type="text" class="form-control" id="editUnit" name="unit" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Unit Cost</label>
-                                <input type="number" step="0.00001" class="form-control" id="editUnitCost" name="unit_cost" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Is Active</label>
-                                <select class="form-control" id="editIsActive" name="is_active">
-                                    <option value="1">Yes</option>
-                                    <option value="0">No</option>
-                                </select>
-                            </div>
-                            <button type="submit" class="btn btn-primary">Save Changes</button>
-                        </form>
-                    </div>
+                <div class="modal-body">
+                    <form id="addInventoryForm">
+                        <div class="mb-3">
+                            <label class="form-label">SKU</label>
+                            <input type="text" class="form-control" name="sku" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Standard Name</label>
+                            <input type="text" class="form-control" name="standard_name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Brand Name</label>
+                            <input type="text" class="form-control" name="brand_name">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Current Stock</label>
+                            <input type="number" class="form-control" id="addCurrentStock" name="current_stock" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Unit</label>
+                            <input type="text" class="form-control" name="unit" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Unit Cost</label>
+                            <input type="number" step="0.00001" class="form-control" name="unit_cost" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Is Active</label>
+                            <select class="form-control" name="is_active">
+                                <option value="1">Yes</option>
+                                <option value="0">No</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            // 添加库存
-            $('#addInventoryForm').on('submit', function(e) {
-                e.preventDefault();
-                $.ajax({
-                    url: '/inventory',
-                    type: 'POST',
-                    data: $(this).serialize(),
-                    success: function(response) {
-                        alert('Inventory added!');
-                        location.reload();
-                    },
-                    error: function() {
-                        alert('Error adding inventory.');
-                    }
-                });
-            });
 
-            // 编辑库存
-            $('.edit-btn').on('click', function() {
-                const id = $(this).data('id');
-                $.get(`/inventory/${id}`, function(data) {
-                    $('#editInventoryId').val(data.id);
-                    $('#editSku').val(data.sku);
-                    $('#editStandardName').val(data.standard_name);
-                    $('#editBrandName').val(data.brand_name);
-                    $('#editCurrentStock').val(data.current_stock);
-                    $('#editUnit').val(data.unit);
-                    $('#editUnitCost').val(data.unit_cost);
-                    $('#editIsActive').val(data.is_active);
-                });
-            });
+    <!-- Modal for editing inventory -->
+    <div class="modal fade" id="editInventoryModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Inventory</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editInventoryForm">
+                        <input type="hidden" id="editInventoryId">
+                        <div class="mb-3">
+                            <label class="form-label">SKU</label>
+                            <input type="text" class="form-control" id="editSku" name="sku" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Standard Name</label>
+                            <input type="text" class="form-control" id="editStandardName" name="standard_name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Brand Name</label>
+                            <input type="text" class="form-control" id="editBrandName" name="brand_name">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Current Stock</label>
+                            <input type="number" class="form-control" id="editCurrentStock" name="current_stock" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Unit</label>
+                            <input type="text" class="form-control" id="editUnit" name="unit" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Unit Cost</label>
+                            <input type="number" step="0.00001" class="form-control" id="editUnitCost" name="unit_cost" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Is Active</label>
+                            <select class="form-control" id="editIsActive" name="is_active">
+                                <option value="1">Yes</option>
+                                <option value="0">No</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-            $('#editInventoryForm').on('submit', function(e) {
-                e.preventDefault();
-                const id = $('#editInventoryId').val();
-                const formData = $(this).serialize();
-                console.log('Sending inventory update data:', formData);
-                $.ajax({
-                    url: `/inventory/${id}`,
-                    type: 'PUT',
-                    data: formData,
-                    success: function(response) {
-                        console.log('Update success:', response);
-                        alert(response.message || 'Inventory updated!');
-                        location.reload();
-                    },
-                    error: function(xhr) {
-                        console.log('Update error:', xhr.status, xhr.responseText);
-                        alert('Error updating inventory: ' + xhr.responseText);
-                    }
-                });
-            });
+{% endblock %}
 
-            // 删除库存
-            $('.delete-btn').on('click', function() {
-                if (confirm('Are you sure you want to delete this inventory item?')) {
-                    const id = $(this).data('id');
-                    $.ajax({
-                        url: `/inventory/${id}`,
-                        type: 'DELETE',
-                        success: function() {
-                            alert('Inventory deleted!');
-                            location.reload();
-                        },
-                        error: function() {
-                            alert('Error deleting inventory.');
-                        }
-                    });
+{% block extra_js %}
+<script>
+    $(document).ready(function() {
+        // 添加库存
+        $('#addInventoryForm').on('submit', function(e) {
+            e.preventDefault();
+            $.ajax({
+                url: '/inventory',
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function(response) {
+                    alert('Inventory added!');
+                    location.reload();
+                },
+                error: function() {
+                    alert('Error adding inventory.');
                 }
             });
         });
-    </script>
-</body>
-</html>
+
+        // 编辑库存
+        $('.edit-btn').on('click', function() {
+            const id = $(this).data('id');
+            $.get(`/inventory/${id}`, function(data) {
+                $('#editInventoryId').val(data.id);
+                $('#editSku').val(data.sku);
+                $('#editStandardName').val(data.standard_name);
+                $('#editBrandName').val(data.brand_name);
+                $('#editCurrentStock').val(data.current_stock);
+                $('#editUnit').val(data.unit);
+                $('#editUnitCost').val(data.unit_cost);
+                $('#editIsActive').val(data.is_active);
+            });
+        });
+
+        $('#editInventoryForm').on('submit', function(e) {
+            e.preventDefault();
+            const id = $('#editInventoryId').val();
+            const formData = $(this).serialize();
+            console.log('Sending inventory update data:', formData);
+            $.ajax({
+                url: `/inventory/${id}`,
+                type: 'PUT',
+                data: formData,
+                success: function(response) {
+                    console.log('Update success:', response);
+                    alert(response.message || 'Inventory updated!');
+                    location.reload();
+                },
+                error: function(xhr) {
+                    console.log('Update error:', xhr.status, xhr.responseText);
+                    alert('Error updating inventory: ' + xhr.responseText);
+                }
+            });
+        });
+
+        // 删除库存
+        $('.delete-btn').on('click', function() {
+            if (confirm('Are you sure you want to delete this inventory item?')) {
+                const id = $(this).data('id');
+                $.ajax({
+                    url: `/inventory/${id}`,
+                    type: 'DELETE',
+                    success: function() {
+                        alert('Inventory deleted!');
+                        location.reload();
+                    },
+                    error: function() {
+                        alert('Error deleting inventory.');
+                    }
+                });
+            }
+        });
+    });
+</script>
+{% endblock %}

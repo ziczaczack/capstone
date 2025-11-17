@@ -1,180 +1,171 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Products</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-light bg-light">
-        <a class="navbar-brand" href="/">Cafe Inventory</a>
-        <div class="navbar-nav">
-            <a class="nav-link" href="/products">Products</a>
-            <a class="nav-link" href="/inventory">Inventory</a>
-            <a class="nav-link" href="/recipes">Recipes</a>
-            <a class="nav-link" href="/suppliers">Suppliers</a>
-            <a class="nav-link" href="/transactions">Transactions</a>
-            <a class="nav-link" href="/logout">Logout</a>
-        </div>
-    </nav>
-    <div class="container mt-4">
-        <h1>Products</h1>
-        <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addProductModal">Add Product</button>
-        <table class="table" id="productsTable">
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Category</th>
-                    <th>Product Name</th>
-                    <th>Description</th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for product in products %}
-                <tr>
-                    <td>{{ product.id }}</td>
-                    <td>{{ product.category }}</td>
-                    <td>{{ product.product_name }}</td>
-                    <td>{{ product.description }}</td>
-                    <td>
-                        <button class="btn btn-warning btn-sm edit-btn" data-id="{{ product.id }}" data-bs-toggle="modal" data-bs-target="#editProductModal">Edit</button>
-                        <button class="btn btn-danger btn-sm delete-btn" data-id="{{ product.id }}">Delete</button>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+{% extends "base.html" %}
 
-        <!-- Modal for adding product -->
-        <div class="modal fade" id="addProductModal" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Add Product</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="addProductForm">
-                            <div class="mb-3">
-                                <label class="form-label">Category</label>
-                                <input type="text" class="form-control" name="category" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Product Name</label>
-                                <input type="text" class="form-control" name="product_name" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Description</label>
-                                <input type="text" class="form-control" name="description">
-                            </div>
-                            <button type="submit" class="btn btn-primary">Save</button>
-                        </form>
-                    </div>
+{% block title %}Products - Cafe Inventory{% endblock %}
+
+{% block content %}
+<div class="container-fluid">
+    <h1>Products</h1>
+    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addProductModal">Add Product</button>
+    <table class="table" id="productsTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Category</th>
+                <th>Product Name</th>
+                <th>Description</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+            <tr>
+                <td>{{ product.id }}</td>
+                <td>{{ product.category }}</td>
+                <td>{{ product.product_name }}</td>
+                <td>{{ product.description }}</td>
+                <td>
+                    <button class="btn btn-warning btn-sm edit-btn" data-id="{{ product.id }}" data-bs-toggle="modal" data-bs-target="#editProductModal">Edit</button>
+                    <button class="btn btn-danger btn-sm delete-btn" data-id="{{ product.id }}">Delete</button>
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Modal for adding product -->
+    <div class="modal fade" id="addProductModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
-            </div>
-        </div>
-
-        <!-- Modal for editing product -->
-        <div class="modal fade" id="editProductModal" tabindex="-1">
-            <div class="modal-dialog">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <h5 class="modal-title">Edit Product</h5>
-                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
-                    </div>
-                    <div class="modal-body">
-                        <form id="editProductForm">
-                            <input type="hidden" id="editProductId">
-                            <div class="mb-3">
-                                <label class="form-label">Category</label>
-                                <input type="text" class="form-control" id="editCategory" name="category" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Product Name</label>
-                                <input type="text" class="form-control" id="editProductName" name="product_name" required>
-                            </div>
-                            <div class="mb-3">
-                                <label class="form-label">Description</label>
-                                <input type="text" class="form-control" id="editDescription" name="description">
-                            </div>
-                            <button type="submit" class="btn btn-primary">Save Changes</button>
-                        </form>
-                    </div>
+                <div class="modal-body">
+                    <form id="addProductForm">
+                        <div class="mb-3">
+                            <label class="form-label">Category</label>
+                            <input type="text" class="form-control" name="category" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Product Name</label>
+                            <input type="text" class="form-control" name="product_name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <input type="text" class="form-control" name="description">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save</button>
+                    </form>
                 </div>
             </div>
         </div>
     </div>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            // 添加产品
-            $('#addProductForm').on('submit', function(e) {
-                e.preventDefault();
-                $.ajax({
-                    url: '/products',
-                    type: 'POST',
-                    data: $(this).serialize(),
-                    success: function(response) {
-                        alert('Product added!');
-                        location.reload();
-                    },
-                    error: function() {
-                        alert('Error adding product.');
-                    }
-                });
-            });
 
-            // 编辑产品
-            $('.edit-btn').on('click', function() {
-                const id = $(this).data('id');
-                $('#editProductId').val(id);
-                // 填充模态窗数据（假设已有逻辑）
-                $('#editProductModal').modal('show');
-            });
+    <!-- Modal for editing product -->
+    <div class="modal fade" id="editProductModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Edit Product</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editProductForm">
+                        <input type="hidden" id="editProductId">
+                        <div class="mb-3">
+                            <label class="form-label">Category</label>
+                            <input type="text" class="form-control" id="editCategory" name="category" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Product Name</label>
+                            <input type="text" class="form-control" id="editProductName" name="product_name" required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Description</label>
+                            <input type="text" class="form-control" id="editDescription" name="description">
+                        </div>
+                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-            $('#editProductForm').on('submit', function(e) {
-                e.preventDefault();
-                const id = $('#editProductId').val();
-                const formData = $(this).serialize();
-                console.log('Sending update data:', formData);
-                $.ajax({
-                    url: `/products/${id}`,
-                    type: 'PUT',
-                    data: formData,
-                    success: function(response) {
-                        console.log('Update success:', response);
-                        alert(response.message || 'Product updated!');
-                        location.reload();
-                    },
-                    error: function(xhr) {
-                        console.log('Update error:', xhr.status, xhr.responseText);
-                        alert('Error updating product: ' + xhr.responseText);
-                    }
-                });
-            });
+{% endblock %}
 
-            // 删除产品
-            $('.delete-btn').on('click', function() {
-                if (confirm('Are you sure you want to delete this product?')) {
-                    const id = $(this).data('id');
-                    console.log('Deleting product id:', id);
-                    $.ajax({
-                        url: `/products/${id}`,  // 确保 URL 正确
-                        type: 'DELETE',
-                        success: function(response) {
-                            console.log('Delete success:', response);
-                            alert(response.message || 'Product deleted!');
-                            location.reload();
-                        },
-                        error: function(xhr) {
-                            console.log('Delete error:', xhr.status, xhr.responseText);
-                            alert('Error deleting product: ' + xhr.responseText);
-                        }
-                    });
+{% block extra_js %}
+<script>
+    $(document).ready(function() {
+        // 添加产品
+        $('#addProductForm').on('submit', function(e) {
+            e.preventDefault();
+            $.ajax({
+                url: '/products',
+                type: 'POST',
+                data: $(this).serialize(),
+                success: function(response) {
+                    alert('Product added!');
+                    location.reload();
+                },
+                error: function() {
+                    alert('Error adding product.');
                 }
             });
         });
-    </script>
-</body>
-</html>
+
+        // 编辑产品
+        $('.edit-btn').on('click', function() {
+            const id = $(this).data('id');
+            $.get(`/products/${id}`, function(data) {
+                $('#editProductId').val(data.id);
+                $('#editCategory').val(data.category);
+                $('#editProductName').val(data.product_name);
+                $('#editDescription').val(data.description);
+            });
+        });
+
+        $('#editProductForm').on('submit', function(e) {
+            e.preventDefault();
+            const id = $('#editProductId').val();
+            const formData = $(this).serialize();
+            console.log('Sending update data:', formData);
+            $.ajax({
+                url: `/products/${id}`,
+                type: 'PUT',
+                data: formData,
+                success: function(response) {
+                    console.log('Update success:', response);
+                    alert(response.message || 'Product updated!');
+                    location.reload();
+                },
+                error: function(xhr) {
+                    console.log('Update error:', xhr.status, xhr.responseText);
+                    alert('Error updating product: ' + xhr.responseText);
+                }
+            });
+        });
+
+        // 删除产品
+        $('.delete-btn').on('click', function() {
+            if (confirm('Are you sure you want to delete this product?')) {
+                const id = $(this).data('id');
+                console.log('Deleting product id:', id);
+                $.ajax({
+                    url: `/products/${id}`,
+                    type: 'DELETE',
+                    success: function(response) {
+                        console.log('Delete success:', response);
+                        alert(response.message || 'Product deleted!');
+                        location.reload();
+                    },
+                    error: function(xhr) {
+                        console.log('Delete error:', xhr.status, xhr.responseText);
+                        alert('Error deleting product: ' + xhr.responseText);
+                    }
+                });
+            }
+        });
+    });
+</script>
+{% endblock %}

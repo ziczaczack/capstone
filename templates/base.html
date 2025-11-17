@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{% block title %}Cafe Inventory{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        .navbar-custom {
+            background-color: #f8f9fa;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        .user-profile-section {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-left: auto;
+        }
+        .user-info {
+            text-align: right;
+            font-size: 14px;
+        }
+        .username {
+            font-weight: bold;
+            color: #333;
+        }
+        .role-badge {
+            display: inline-block;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        .role-badge.superadmin {
+            background-color: #dc3545;
+            color: white;
+        }
+        .role-badge.admin {
+            background-color: #007bff;
+            color: white;
+        }
+        .role-badge.staff {
+            background-color: #28a745;
+            color: white;
+        }
+        .role-badge.user {
+            background-color: #6c757d;
+            color: white;
+        }
+        .main-content {
+            flex: 1;
+            padding: 20px;
+        }
+    </style>
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+    <!-- Navigation Bar with User Profile -->
+    <nav class="navbar navbar-expand-lg navbar-custom">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="/">☕ Cafe Inventory</a>
+            
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <div class="navbar-nav">
+                    <a class="nav-link" href="/products">Products</a>
+                    <a class="nav-link" href="/inventory">Inventory</a>
+                    <a class="nav-link" href="/recipes">Recipes</a>
+                    <a class="nav-link" href="/suppliers">Suppliers</a>
+                    <a class="nav-link" href="/transactions">Transactions</a>
+                </div>
+                
+                <!-- User Profile Section -->
+                <div class="user-profile-section">
+                    {% if current_user.is_authenticated %}
+                        <div class="user-info">
+                            <div class="username">{{ current_user.username }}</div>
+                            <span class="role-badge {{ current_user.role.lower() }}">{{ current_user.role }}</span>
+                        </div>
+                        <a href="/profile" class="btn btn-outline-secondary btn-sm" title="View Profile">👤</a>
+                        <a href="/logout" class="btn btn-outline-danger btn-sm">Logout</a>
+                    {% else %}
+                        <a href="/login" class="btn btn-primary btn-sm">Login</a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        {% with messages = get_flashed_messages() %}
+            {% if messages %}
+                {% for message in messages %}
+                    <div class="alert alert-warning alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-light text-center py-3 mt-5" style="border-top: 1px solid #ddd;">
+        <small class="text-muted">Cafe Inventory System © 2025</small>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>
