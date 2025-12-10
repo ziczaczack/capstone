@@ -29,10 +29,10 @@ DATABASE = os.environ.get('DATABASE', 'cafe_inventory.db')
 # Email Configuration (Replace with actual credentials or use environment variables)
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
-EMAIL_USER = 'ziczaczack@gmail.com' # CHANGE_ME
-EMAIL_PASSWORD = 'bimq qefk yqvc rlst' # CHANGE_ME
+EMAIL_USER = '' # CHANGE_ME
+EMAIL_PASSWORD = '' # CHANGE_ME
 EMAIL_FROM = EMAIL_USER
-EMAIL_TO = 'j24041446@student.newinti.edu.my' # CHANGE_ME
+EMAIL_TO = '' # CHANGE_ME
 
 def send_low_stock_email(product_name, current_stock, threshold):
     """Sends an email notification for low stock running in a separate thread."""
