@@ -2,46 +2,468 @@
 
 {% block title %}Transactions - Cafe Inventory{% endblock %}
 
-{% block content %}
-<div class="container-fluid">
-    <h1>Transactions (Sales)</h1>
-    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addTransactionModal">Add Sale</button>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Product ID</th>
-                <th>Quantity</th>
-                <th>Total Cost</th>
-                <th>Sale Date</th>
-                <th>Status</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for tx in transactions %}
-            <tr>
-                <td>{{ tx.id }}</td>
-                <td>{{ tx.product_id }}</td>
-                <td>{{ tx.quantity }}</td>
-                <td>{{ tx.total_cost }}</td>
-                <td>{{ tx.sale_date }}</td>
-                <td>{{ tx.status }}</td>
-                <td>
-                    <button class="btn btn-warning btn-sm edit-btn" data-id="{{ tx.id }}">Edit</button>
-                    <button class="btn btn-danger btn-sm delete-btn" data-id="{{ tx.id }}">Delete</button>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+{% block extra_css %}
+<style>
+    .transactions-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 30px 20px;
+    }
 
-    <!-- Add Modal -->
+    .page-header {
+        background-color: #6d4c41;
+        color: white;
+        padding: 30px 40px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .page-header h1 {
+        margin: 0;
+        font-size: 2rem;
+        font-weight: 600;
+    }
+
+    .transaction-count {
+        background-color: rgba(255, 255, 255, 0.2);
+        padding: 6px 14px;
+        border-radius: 15px;
+        font-weight: 600;
+        display: inline-block;
+        margin-left: 12px;
+        font-size: 0.9rem;
+    }
+
+    .action-bar {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .btn-add-transaction {
+        background-color: #8d6e63;
+        border: none;
+        padding: 10px 24px;
+        font-weight: 600;
+        border-radius: 6px;
+        color: white;
+        transition: background-color 0.2s ease;
+    }
+
+    .btn-add-transaction:hover {
+        background-color: #6d4c41;
+        color: white;
+    }
+
+    .btn-export {
+        background-color: #a1887f;
+        border: 1px solid #8d6e63;
+        padding: 10px 24px;
+        font-weight: 600;
+        border-radius: 6px;
+        color: white;
+        transition: background-color 0.2s ease;
+    }
+
+    .btn-export:hover {
+        background-color: #8d6e63;
+        color: white;
+    }
+
+    .filter-card {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        margin-bottom: 20px;
+        overflow: hidden;
+    }
+
+    .filter-card-header {
+        background-color: #efebe9;
+        padding: 16px 20px;
+        border-bottom: 1px solid #d7ccc8;
+    }
+
+    .filter-card-header h5 {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #5d4037;
+    }
+
+    .filter-card-body {
+        padding: 20px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #5d4037;
+        margin-bottom: 6px;
+        font-size: 0.85rem;
+    }
+
+    .form-control {
+        border: 1px solid #d7ccc8;
+        border-radius: 4px;
+        padding: 8px 12px;
+        font-size: 0.9rem;
+        transition: border-color 0.2s ease;
+    }
+
+    .form-control:focus {
+        border-color: #8d6e63;
+        box-shadow: 0 0 0 2px rgba(141, 110, 99, 0.1);
+    }
+
+    .btn-apply {
+        background-color: #8d6e63;
+        border: none;
+        color: white;
+        font-weight: 600;
+        transition: background-color 0.2s ease;
+    }
+
+    .btn-apply:hover {
+        background-color: #6d4c41;
+        color: white;
+    }
+
+    .btn-reset {
+        background-color: #bcaaa4;
+        border: none;
+        color: white;
+        font-weight: 600;
+        transition: background-color 0.2s ease;
+    }
+
+    .btn-reset:hover {
+        background-color: #a1887f;
+        color: white;
+    }
+
+    .results-info {
+        background-color: #d7ccc8;
+        color: #4e342e;
+        padding: 12px 20px;
+        border-radius: 6px;
+        margin-bottom: 20px;
+        font-weight: 600;
+    }
+
+    .transactions-card {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+    }
+
+    .transactions-table {
+        margin: 0;
+        width: 100%;
+    }
+
+    .transactions-table thead {
+        background-color: #efebe9;
+    }
+
+    .transactions-table thead th {
+        padding: 16px 20px;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.5px;
+        color: #5d4037;
+        border: none;
+    }
+
+    .transactions-table tbody tr {
+        transition: background-color 0.2s ease;
+        border-bottom: 1px solid #f5f5f5;
+    }
+
+    .transactions-table tbody tr:hover {
+        background-color: #fafafa;
+    }
+
+    .transactions-table tbody td {
+        padding: 18px 20px;
+        vertical-align: middle;
+        color: #424242;
+    }
+
+    .transaction-id-badge {
+        display: inline-block;
+        background-color: #8d6e63;
+        color: white;
+        padding: 5px 12px;
+        border-radius: 4px;
+        font-weight: 600;
+        font-size: 0.85rem;
+    }
+
+    .btn-view {
+        background-color: #a1887f;
+        border: none;
+        padding: 7px 16px;
+        border-radius: 4px;
+        font-weight: 600;
+        color: white;
+        font-size: 0.85rem;
+        transition: background-color 0.2s ease;
+    }
+
+    .btn-view:hover {
+        background-color: #8d6e63;
+        color: white;
+    }
+
+    .btn-delete {
+        background-color: #d32f2f;
+        border: none;
+        padding: 7px 16px;
+        border-radius: 4px;
+        font-weight: 600;
+        color: white;
+        font-size: 0.85rem;
+        transition: background-color 0.2s ease;
+    }
+
+    .btn-delete:hover {
+        background-color: #c62828;
+        color: white;
+    }
+
+    .modal-content {
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .modal-header {
+        background-color: #6d4c41;
+        color: white;
+        border-radius: 8px 8px 0 0;
+        padding: 20px 25px;
+        border: none;
+    }
+
+    .modal-header .modal-title {
+        font-weight: 600;
+        font-size: 1.3rem;
+    }
+
+    .modal-header .btn-close {
+        filter: brightness(0) invert(1);
+        opacity: 0.8;
+    }
+
+    .modal-body {
+        padding: 25px;
+    }
+
+    .modal-footer {
+        border-top: 1px solid #efebe9;
+        padding: 15px 25px;
+    }
+
+    .btn-modal-close {
+        background-color: #bcaaa4;
+        border: none;
+        color: white;
+        font-weight: 600;
+    }
+
+    .btn-modal-close:hover {
+        background-color: #a1887f;
+        color: white;
+    }
+
+    .btn-modal-delete {
+        background-color: #d32f2f;
+        border: none;
+        color: white;
+        font-weight: 600;
+    }
+
+    .btn-modal-delete:hover {
+        background-color: #c62828;
+        color: white;
+    }
+
+    .btn-save {
+        background-color: #8d6e63;
+        border: none;
+        padding: 10px 24px;
+        font-weight: 600;
+        border-radius: 4px;
+        color: white;
+        transition: background-color 0.2s ease;
+    }
+
+    .btn-save:hover {
+        background-color: #6d4c41;
+        color: white;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #9e9e9e;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="transactions-container">
+    <div class="page-header">
+        <h1>
+            💰 Transactions (Sales)
+            <span class="transaction-count">{{ transactions|length }} Records</span>
+        </h1>
+    </div>
+
+    <div class="action-bar">
+        <button class="btn btn-primary btn-add-transaction" data-bs-toggle="modal"
+            data-bs-target="#addTransactionModal">
+            ➕ Add Sale
+        </button>
+        {% if current_user.role == 'superadmin' %}
+        <a href="/export?table=transactions" class="btn btn-export">
+            📥 Export CSV
+        </a>
+        {% endif %}
+    </div>
+
+    <!-- Filter Section -->
+    <div class="filter-card">
+        <div class="filter-card-header">
+            <h5>🔍 Filters</h5>
+        </div>
+        <div class="filter-card-body">
+            <form method="GET" id="filterForm">
+                <div class="row">
+                    <div class="col-md-3">
+                        <label class="form-label">Search by Product Name</label>
+                        <input type="text" class="form-control" name="search_product" placeholder="e.g., Coffee"
+                            value="{{ filters.search_product }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">From Date</label>
+                        <input type="date" class="form-control" name="date_from" value="{{ filters.date_from }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label">To Date</label>
+                        <input type="date" class="form-control" name="date_to" value="{{ filters.date_to }}">
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-md-2">
+                        <label class="form-label">Min Quantity</label>
+                        <input type="number" class="form-control" name="min_qty" placeholder="Min"
+                            value="{{ filters.min_qty }}">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Max Quantity</label>
+                        <input type="number" class="form-control" name="max_qty" placeholder="Max"
+                            value="{{ filters.max_qty }}">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Min Cost ($)</label>
+                        <input type="number" step="0.01" class="form-control" name="min_cost" placeholder="Min"
+                            value="{{ filters.min_cost }}">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Max Cost ($)</label>
+                        <input type="number" step="0.01" class="form-control" name="max_cost" placeholder="Max"
+                            value="{{ filters.max_cost }}">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">&nbsp;</label>
+                        <div>
+                            <button type="submit" class="btn btn-apply btn-sm">Apply</button>
+                            <a href="/transactions" class="btn btn-reset btn-sm">Reset</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Results Count -->
+    <div class="results-info">
+        Showing <strong>{{ transactions|length }}</strong> transaction(s)
+    </div>
+
+    <!-- Transactions Table -->
+    <div class="transactions-card">
+        <table class="table transactions-table">
+            <thead>
+                <tr>
+                    <th style="width: 100px;">ID</th>
+                    <th>Product</th>
+                    {% if current_user.role == 'staff' %}
+                    <th>Quantity</th>
+                    {% endif %}
+                    {% if current_user.role == 'superadmin' %}
+                    <th style="width: 200px;">Actions</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for tx in transactions %}
+                <tr data-id="{{ tx.id }}">
+                    <td>
+                        <span class="transaction-id-badge">#{{ tx.id }}</span>
+                    </td>
+                    <td>{{ tx.product_name or 'N/A' }}</td>
+                    {% if current_user.role == 'staff' %}
+                    <td>{{ tx.quantity }}</td>
+                    {% endif %}
+                    {% if current_user.role == 'superadmin' %}
+                    <td>
+                        <button class="btn btn-sm btn-view view-btn" data-id="{{ tx.id }}">View</button>
+                        <button class="btn btn-sm btn-delete delete-btn" data-id="{{ tx.id }}">Delete</button>
+                    </td>
+                    {% endif %}
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="3" class="empty-state">
+                        <h5>No transactions found</h5>
+                        <p>Start by adding your first sale</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Details Modal -->
+    <div class="modal fade" id="detailModalTx" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">📋 Transaction Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="detailBodyTx">
+                    <div id="detailContentTx">Loading...</div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-modal-close" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-modal-delete" id="detailDeleteBtnTx">Delete</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Add Sale Modal -->
     <div class="modal fade" id="addTransactionModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Add Sale</h5>
+                    <h5 class="modal-title">➕ Add Sale</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
@@ -62,7 +484,7 @@
                             <label class="form-label">Quantity</label>
                             <input type="number" min="1" class="form-control" name="quantity" required>
                         </div>
-                        <button type="submit" class="btn btn-primary">Record Sale</button>
+                        <button type="submit" class="btn btn-save">💾 Record Sale</button>
                     </form>
                 </div>
             </div>
@@ -74,10 +496,10 @@
 
 {% block extra_js %}
 <script>
-    $(document).ready(function() {
-        // 加载产品选项
+    $(document).ready(function () {
+        // Load product options
         function loadProductOptions() {
-            $.get('/products/options', function(data) {
+            $.get('/products/options', function (data) {
                 const select = $('#productSelect');
                 select.empty();
                 select.append('<option value="">Select a product</option>');
@@ -87,13 +509,13 @@
             });
         }
 
-        // 加载 SKU 选项
+        // Load SKU options based on product
         function loadSkuOptions(productId) {
             if (!productId) {
                 $('#skuSelectContainer').hide();
                 return;
             }
-            $.get(`/inventory/options?product_id=${productId}`, function(data) {
+            $.get(`/inventory/options?product_id=${productId}`, function (data) {
                 const select = $('#skuSelect');
                 select.empty();
                 select.append('<option value="">Select an ingredient</option>');
@@ -108,56 +530,81 @@
             });
         }
 
-        // 初始化添加和编辑模态的选项
-        loadProductOptions();
-        $('#productSelect').on('change', function() {
+        // Initialize product options on modal open
+        $('#addTransactionModal').on('show.bs.modal', function () {
+            loadProductOptions();
+        });
+
+        // Handle product selection change
+        $('#productSelect').on('change', function () {
             loadSkuOptions($(this).val());
         });
 
-        // 添加交易
-        $('#addTransactionForm').on('submit', function(e) {
+        // Add transaction (sale)
+        $('#addTransactionForm').on('submit', function (e) {
             e.preventDefault();
             $.ajax({
                 url: '/transactions',
                 type: 'POST',
                 data: $(this).serialize(),
-                success: function(response) {
-                    alert('Sale recorded!');
+                success: function (response) {
+                    alert('✅ Sale recorded!');
                     location.reload();
                 },
-                error: function(xhr) {
-                    const errorMsg = xhr.responseJSON.error || 'Error recording sale.';
-                    alert(errorMsg);
+                error: function (xhr) {
+                    const errorMsg = xhr.responseJSON?.error || 'Error recording sale.';
+                    alert('❌ ' + errorMsg);
                 }
             });
         });
 
-        // 编辑交易
-        $('.edit-btn').on('click', function() {
-            const id = $(this).data('id');
-            $.get(`/transactions/${id}`, function(data) {
-                $('#editTransactionId').val(data.id);
-                $('#editProductId').val(data.product_id);
-                $('#editQuantity').val(data.quantity);
-            });
-        });
-
-        // 删除交易
-        $('.delete-btn').on('click', function() {
-            if (confirm('Are you sure you want to delete this transaction?')) {
+        // Delete transaction
+        $('.delete-btn').on('click', function () {
+            if (confirm('⚠️ Are you sure you want to delete this transaction?')) {
                 const id = $(this).data('id');
                 $.ajax({
                     url: `/transactions/${id}`,
                     type: 'DELETE',
-                    success: function() {
-                        alert('Transaction deleted!');
+                    success: function () {
+                        alert('✅ Transaction deleted!');
                         location.reload();
                     },
-                    error: function() {
-                        alert('Error deleting transaction.');
+                    error: function () {
+                        alert('❌ Error deleting transaction.');
                     }
                 });
             }
+        });
+
+        // View transaction details
+        function loadDetailsTx(id) {
+            $('#detailContentTx').text('Loading...');
+            $('#detailDeleteBtnTx').data('id', id);
+            $.get(`/transactions/${id}`, function (data) {
+                let html = '<table class="table table-sm">';
+                for (const k in data) { html += `<tr><th>${k}</th><td>${data[k]}</td></tr>`; }
+                html += '</table>';
+                $('#detailContentTx').html(html);
+                $('#detailModalTx').modal('show');
+            }).fail(function () { $('#detailContentTx').text('Failed to load details'); });
+        }
+
+        $('.view-btn').on('click', function () { loadDetailsTx($(this).data('id')); });
+
+        $('#detailDeleteBtnTx').on('click', function () {
+            const id = $(this).data('id');
+            if (!confirm('⚠️ Delete this transaction?')) return;
+            $.ajax({
+                url: `/transactions/${id}`,
+                type: 'DELETE',
+                success: function () {
+                    alert('✅ Transaction deleted!');
+                    location.reload();
+                },
+                error: function () {
+                    alert('❌ Error deleting transaction.');
+                }
+            });
         });
     });
 </script>

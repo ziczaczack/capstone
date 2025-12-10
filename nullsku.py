@@ -1,14 +1,14 @@
 import sqlite3
 
-# 连接数据库
+# Connect to database
 conn = sqlite3.connect('cafe_inventory - Copy.db')
 cursor = conn.cursor()
 
-# 将 ingredient_sku 为空白或无效的值更新为 NULL
+# Update ingredient_sku values that are blank or invalid to NULL
 cursor.execute("UPDATE recipes SET ingredient_sku = NULL WHERE ingredient_sku = '' OR ingredient_sku IS NULL")
 
-# 提交更改
+# Commit changes
 conn.commit()
 conn.close()
 
-print("ingredient_sku 已更新为 NULL！")
+print("ingredient_sku has been updated to NULL!")

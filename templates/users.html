@@ -1,0 +1,426 @@
+{% extends "base.html" %}
+
+{% block title %}User Management - Cafe Inventory{% endblock %}
+
+{% block extra_css %}
+<style>
+    .users-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 30px 20px;
+    }
+
+    .page-header {
+        background-color: #6d4c41;
+        color: white;
+        padding: 30px 40px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .page-header h1 {
+        margin: 0;
+        font-size: 2rem;
+        font-weight: 600;
+    }
+
+    .page-header p {
+        margin: 8px 0 0 0;
+        opacity: 0.9;
+        font-size: 1rem;
+    }
+
+    .user-count {
+        background-color: rgba(255, 255, 255, 0.2);
+        padding: 6px 14px;
+        border-radius: 15px;
+        font-weight: 600;
+        display: inline-block;
+        margin-left: 12px;
+        font-size: 0.9rem;
+    }
+
+    .action-bar {
+        margin-bottom: 20px;
+    }
+
+    .btn-add-user {
+        background-color: #8d6e63;
+        border: none;
+        padding: 10px 24px;
+        font-weight: 600;
+        border-radius: 6px;
+        color: white;
+        transition: background-color 0.2s ease;
+    }
+
+    .btn-add-user:hover {
+        background-color: #6d4c41;
+        color: white;
+    }
+
+    .users-card {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+    }
+
+    .table-container {
+        overflow-x: auto;
+    }
+
+    .users-table {
+        margin: 0;
+        width: 100%;
+    }
+
+    .users-table thead {
+        background-color: #efebe9;
+    }
+
+    .users-table thead th {
+        padding: 16px 20px;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.5px;
+        color: #5d4037;
+        border: none;
+    }
+
+    .users-table tbody tr {
+        transition: background-color 0.2s ease;
+        border-bottom: 1px solid #f5f5f5;
+    }
+
+    .users-table tbody tr:hover {
+        background-color: #fafafa;
+    }
+
+    .users-table tbody td {
+        padding: 18px 20px;
+        vertical-align: middle;
+        color: #424242;
+    }
+
+    .user-id-badge {
+        display: inline-block;
+        background-color: #8d6e63;
+        color: white;
+        padding: 5px 12px;
+        border-radius: 4px;
+        font-weight: 600;
+        font-size: 0.85rem;
+        min-width: 40px;
+        text-align: center;
+    }
+
+    .username-cell {
+        font-weight: 600;
+        font-size: 1rem;
+        color: #424242;
+    }
+
+    .role-badge {
+        display: inline-block;
+        padding: 6px 16px;
+        border-radius: 4px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        letter-spacing: 0.3px;
+    }
+
+    .role-badge.superadmin {
+        background-color: #d7ccc8;
+        color: #4e342e;
+    }
+
+    .role-badge.staff {
+        background-color: #bcaaa4;
+        color: #3e2723;
+    }
+
+    .action-buttons {
+        display: flex;
+        gap: 8px;
+    }
+
+    .btn-edit {
+        background-color: #a1887f;
+        border: none;
+        padding: 7px 16px;
+        border-radius: 4px;
+        font-weight: 600;
+        transition: background-color 0.2s ease;
+        color: white;
+        font-size: 0.85rem;
+    }
+
+    .btn-edit:hover {
+        background-color: #8d6e63;
+        color: white;
+    }
+
+    .btn-delete {
+        background-color: #d32f2f;
+        border: none;
+        padding: 7px 16px;
+        border-radius: 4px;
+        font-weight: 600;
+        transition: background-color 0.2s ease;
+        color: white;
+        font-size: 0.85rem;
+    }
+
+    .btn-delete:hover {
+        background-color: #c62828;
+        color: white;
+    }
+
+    .modal-content {
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .modal-header {
+        background-color: #6d4c41;
+        color: white;
+        border-radius: 8px 8px 0 0;
+        padding: 20px 25px;
+        border: none;
+    }
+
+    .modal-header .modal-title {
+        font-weight: 600;
+        font-size: 1.3rem;
+    }
+
+    .modal-header .btn-close {
+        filter: brightness(0) invert(1);
+        opacity: 0.8;
+    }
+
+    .modal-body {
+        padding: 25px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #5d4037;
+        margin-bottom: 6px;
+        font-size: 0.9rem;
+    }
+
+    .form-control,
+    .form-select {
+        border: 1px solid #d7ccc8;
+        border-radius: 4px;
+        padding: 10px 12px;
+        transition: border-color 0.2s ease;
+        font-size: 0.95rem;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #8d6e63;
+        box-shadow: 0 0 0 2px rgba(141, 110, 99, 0.1);
+    }
+
+    .btn-save {
+        background-color: #8d6e63;
+        border: none;
+        padding: 10px 24px;
+        font-weight: 600;
+        border-radius: 4px;
+        transition: background-color 0.2s ease;
+        width: 100%;
+        margin-top: 10px;
+        color: white;
+    }
+
+    .btn-save:hover {
+        background-color: #6d4c41;
+        color: white;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #9e9e9e;
+    }
+
+    .empty-state .icon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        color: #bcaaa4;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="users-container">
+    <div class="page-header">
+        <h1>
+            👥 User Management
+            <span class="user-count">{{ users|length }} Users</span>
+        </h1>
+        <p>Manage system users and their permissions</p>
+    </div>
+
+    <div class="action-bar">
+        <a href="/register" class="btn btn-primary btn-add-user">
+            ➕ Add New User
+        </a>
+    </div>
+
+    <div class="users-card">
+        <div class="table-container">
+            {% if users %}
+            <table class="table users-table">
+                <thead>
+                    <tr>
+                        <th style="width: 100px;">ID</th>
+                        <th>Username</th>
+                        <th style="width: 200px;">Role</th>
+                        <th style="width: 200px;">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for user in users %}
+                    <tr data-id="{{ user.id }}">
+                        <td>
+                            <span class="user-id-badge">#{{ user.id }}</span>
+                        </td>
+                        <td class="username-cell">{{ user.username }}</td>
+                        <td>
+                            <span class="role-badge {{ user.role.lower() }}">{{ user.role }}</span>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <button class="btn btn-sm btn-edit edit-btn" data-id="{{ user.id }}"
+                                    data-bs-toggle="modal" data-bs-target="#editUserModal">
+                                    ✏️ Edit
+                                </button>
+                                <button class="btn btn-sm btn-delete delete-btn" data-id="{{ user.id }}">
+                                    🗑️ Delete
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <div class="empty-state">
+                <div class="icon">👥</div>
+                <h3>No Users Found</h3>
+                <p>Start by adding your first user</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Modal for editing user -->
+    <div class="modal fade" id="editUserModal" tabindex="-1">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">✏️ Edit User</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <form id="editUserForm">
+                        <input type="hidden" id="editUserId">
+                        <div class="mb-3">
+                            <label class="form-label">Username</label>
+                            <input type="text" class="form-control" id="editUsername" name="username" required
+                                placeholder="Enter username">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Role</label>
+                            <select class="form-select" id="editRole" name="role" required>
+                                <option value="staff">Staff</option>
+                                <option value="superadmin">Superadmin</option>
+                            </select>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">New Password (optional)</label>
+                            <input type="password" class="form-control" id="editPassword" name="password"
+                                placeholder="Leave blank to keep current password">
+                            <small class="form-text text-muted">Only fill this if you want to change the
+                                password</small>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-save">💾 Save Changes</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    $(document).ready(function () {
+        // Edit user - load data
+        $('.edit-btn').on('click', function () {
+            const id = $(this).data('id');
+            $.get(`/users/${id}`, function (data) {
+                $('#editUserId').val(data.id);
+                $('#editUsername').val(data.username);
+                $('#editRole').val(data.role);
+                $('#editPassword').val(''); // Clear password field
+            }).fail(function () {
+                alert('❌ Error loading user data.');
+            });
+        });
+
+        // Edit user - submit form
+        $('#editUserForm').on('submit', function (e) {
+            e.preventDefault();
+            const id = $('#editUserId').val();
+            const formData = $(this).serialize();
+
+            $.ajax({
+                url: `/users/${id}`,
+                type: 'PUT',
+                data: formData,
+                success: function (response) {
+                    alert('✅ ' + (response.message || 'User updated successfully!'));
+                    location.reload();
+                },
+                error: function (xhr) {
+                    const error = xhr.responseJSON ? xhr.responseJSON.error : 'Error updating user';
+                    alert('❌ ' + error);
+                }
+            });
+        });
+
+        // Delete user
+        $('.delete-btn').on('click', function () {
+            const id = $(this).data('id');
+            const username = $(this).closest('tr').find('.username-cell').text().trim();
+
+            if (confirm(`⚠️ Are you sure you want to delete user "${username}"?\n\nThis action cannot be undone.`)) {
+                $.ajax({
+                    url: `/users/${id}`,
+                    type: 'DELETE',
+                    success: function (response) {
+                        alert('✅ ' + (response.message || 'User deleted successfully!'));
+                        location.reload();
+                    },
+                    error: function (xhr) {
+                        const error = xhr.responseJSON ? xhr.responseJSON.error : 'Error deleting user';
+                        alert('❌ ' + error);
+                    }
+                });
+            }
+        });
+    });
+</script>
+{% endblock %}

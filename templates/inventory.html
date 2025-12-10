@@ -2,52 +2,521 @@
 
 {% block title %}Inventory - Cafe Inventory{% endblock %}
 
+{% block extra_css %}
+<style>
+    .inventory-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 30px 20px;
+    }
+
+    .page-header {
+        background-color: #6d4c41;
+        color: white;
+        padding: 30px 40px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .page-header h1 {
+        margin: 0;
+        font-size: 2rem;
+        font-weight: 600;
+    }
+
+    .inventory-count {
+        background-color: rgba(255, 255, 255, 0.2);
+        padding: 6px 14px;
+        border-radius: 15px;
+        font-weight: 600;
+        display: inline-block;
+        margin-left: 12px;
+        font-size: 0.9rem;
+    }
+
+    .action-bar {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 20px;
+    }
+
+    .btn-add-inventory {
+        background-color: #8d6e63;
+        border: none;
+        padding: 10px 24px;
+        font-weight: 600;
+        border-radius: 6px;
+        color: white;
+        transition: background-color 0.2s ease;
+    }
+
+    .btn-add-inventory:hover {
+        background-color: #6d4c41;
+        color: white;
+    }
+
+    .btn-export {
+        background-color: #a1887f;
+        border: 1px solid #8d6e63;
+        padding: 10px 24px;
+        font-weight: 600;
+        border-radius: 6px;
+        color: white;
+        transition: background-color 0.2s ease;
+    }
+
+    .btn-export:hover {
+        background-color: #8d6e63;
+        color: white;
+    }
+
+    .filter-card {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        margin-bottom: 20px;
+        overflow: hidden;
+    }
+
+    .filter-card-header {
+        background-color: #efebe9;
+        padding: 16px 20px;
+        border-bottom: 1px solid #d7ccc8;
+    }
+
+    .filter-card-header h5 {
+        margin: 0;
+        font-size: 1rem;
+        font-weight: 600;
+        color: #5d4037;
+    }
+
+    .filter-card-body {
+        padding: 20px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #5d4037;
+        margin-bottom: 6px;
+        font-size: 0.85rem;
+    }
+
+    .form-control,
+    .form-select {
+        border: 1px solid #d7ccc8;
+        border-radius: 4px;
+        padding: 8px 12px;
+        font-size: 0.9rem;
+        transition: border-color 0.2s ease;
+    }
+
+    .form-control:focus,
+    .form-select:focus {
+        border-color: #8d6e63;
+        box-shadow: 0 0 0 2px rgba(141, 110, 99, 0.1);
+    }
+
+    .btn-apply {
+        background-color: #8d6e63;
+        border: none;
+        color: white;
+        font-weight: 600;
+        transition: background-color 0.2s ease;
+    }
+
+    .btn-apply:hover {
+        background-color: #6d4c41;
+        color: white;
+    }
+
+    .btn-reset {
+        background-color: #bcaaa4;
+        border: none;
+        color: white;
+        font-weight: 600;
+        transition: background-color 0.2s ease;
+    }
+
+    .btn-reset:hover {
+        background-color: #a1887f;
+        color: white;
+    }
+
+    .results-info {
+        background-color: #d7ccc8;
+        color: #4e342e;
+        padding: 12px 20px;
+        border-radius: 6px;
+        margin-bottom: 20px;
+        font-weight: 600;
+    }
+
+    .inventory-card {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+    }
+
+    .inventory-table {
+        margin: 0;
+        width: 100%;
+    }
+
+    .inventory-table thead {
+        background-color: #efebe9;
+    }
+
+    .inventory-table thead th {
+        padding: 16px 20px;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.5px;
+        color: #5d4037;
+        border: none;
+    }
+
+    .inventory-table tbody tr {
+        transition: background-color 0.2s ease;
+        border-bottom: 1px solid #f5f5f5;
+    }
+
+    .inventory-table tbody tr:hover {
+        background-color: #fafafa;
+    }
+
+    .inventory-table tbody td {
+        padding: 18px 20px;
+        vertical-align: middle;
+        color: #424242;
+    }
+
+    .inventory-id-badge {
+        display: inline-block;
+        background-color: #8d6e63;
+        color: white;
+        padding: 5px 12px;
+        border-radius: 4px;
+        font-weight: 600;
+        font-size: 0.85rem;
+    }
+
+    .btn-view {
+        background-color: #a1887f;
+        border: none;
+        padding: 7px 16px;
+        border-radius: 4px;
+        font-weight: 600;
+        color: white;
+        font-size: 0.85rem;
+        transition: background-color 0.2s ease;
+    }
+
+    .btn-view:hover {
+        background-color: #8d6e63;
+        color: white;
+    }
+
+    .btn-edit {
+        background-color: #a1887f;
+        border: none;
+        padding: 7px 16px;
+        border-radius: 4px;
+        font-weight: 600;
+        color: white;
+        font-size: 0.85rem;
+        transition: background-color 0.2s ease;
+    }
+
+    .btn-edit:hover {
+        background-color: #8d6e63;
+        color: white;
+    }
+
+    .btn-delete {
+        background-color: #d32f2f;
+        border: none;
+        padding: 7px 16px;
+        border-radius: 4px;
+        font-weight: 600;
+        color: white;
+        font-size: 0.85rem;
+        transition: background-color 0.2s ease;
+    }
+
+    .btn-delete:hover {
+        background-color: #c62828;
+        color: white;
+    }
+
+    .modal-content {
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .modal-header {
+        background-color: #6d4c41;
+        color: white;
+        border-radius: 8px 8px 0 0;
+        padding: 20px 25px;
+        border: none;
+    }
+
+    .modal-header .modal-title {
+        font-weight: 600;
+        font-size: 1.3rem;
+    }
+
+    .modal-header .btn-close {
+        filter: brightness(0) invert(1);
+        opacity: 0.8;
+    }
+
+    .modal-body {
+        padding: 25px;
+    }
+
+    .modal-footer {
+        border-top: 1px solid #efebe9;
+        padding: 15px 25px;
+    }
+
+    .btn-modal-close {
+        background-color: #bcaaa4;
+        border: none;
+        color: white;
+        font-weight: 600;
+    }
+
+    .btn-modal-close:hover {
+        background-color: #a1887f;
+        color: white;
+    }
+
+    .btn-modal-edit {
+        background-color: #a1887f;
+        border: none;
+        color: white;
+        font-weight: 600;
+    }
+
+    .btn-modal-edit:hover {
+        background-color: #8d6e63;
+        color: white;
+    }
+
+    .btn-modal-delete {
+        background-color: #d32f2f;
+        border: none;
+        color: white;
+        font-weight: 600;
+    }
+
+    .btn-modal-delete:hover {
+        background-color: #c62828;
+        color: white;
+    }
+
+    .btn-save {
+        background-color: #8d6e63;
+        border: none;
+        padding: 10px 24px;
+        font-weight: 600;
+        border-radius: 4px;
+        color: white;
+        transition: background-color 0.2s ease;
+    }
+
+    .btn-save:hover {
+        background-color: #6d4c41;
+        color: white;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #9e9e9e;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container-fluid">
-    <h1>Inventory</h1>
-    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addInventoryModal">Add Inventory</button>
-    <table class="table" id="inventoryTable">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>SKU</th>
-                <th>Standard Name</th>
-                <th>Brand Name</th>
-                <th>Current Stock</th>
-                <th>Low Stock</th>
-                <th>Unit</th>
-                <th>Unit Cost</th>
-                <th>Is Active</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in inventory %}
-            <tr>
-                <td>{{ item.id }}</td>
-                <td>{{ item.sku }}</td>
-                <td>{{ item.standard_name }}</td>
-                <td>{{ item.brand_name }}</td>
-                <td>{{ item.current_stock }}</td>
-                <td>{{ "Yes" if item.low_stock else "No" }}</td>
-                <td>{{ item.unit }}</td>
-                <td>{{ item.unit_cost }}</td>
-                <td>{{ "Yes" if item.is_active else "No" }}</td>
-                <td>
-                    <button class="btn btn-warning btn-sm edit-btn" data-id="{{ item.id }}" data-bs-toggle="modal" data-bs-target="#editInventoryModal">Edit</button>
-                    <button class="btn btn-danger btn-sm delete-btn" data-id="{{ item.id }}">Delete</button>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<div class="inventory-container">
+    <div class="page-header">
+        <h1>
+            📦 Inventory
+            <span class="inventory-count">{{ inventory|length }} Items</span>
+        </h1>
+    </div>
+    {% if current_user.role == 'superadmin' %}
+    <div class="action-bar">
+        <button class="btn btn-primary btn-add-inventory" data-bs-toggle="modal" data-bs-target="#addInventoryModal">
+            ➕ Add Inventory
+        </button>
+        <a href="/export?table=inventory" class="btn btn-export">
+            📥 Export CSV
+        </a>
+    </div>
+    {% endif %}
+
+    <!-- Filter Section -->
+    <div class="filter-card">
+        <div class="filter-card-header">
+            <h5>🔍 Filters</h5>
+        </div>
+        <div class="filter-card-body">
+            <form method="GET" id="filterForm">
+                <div class="row">
+                    <div class="col-md-2">
+                        <label class="form-label">Search by SKU</label>
+                        <input type="text" class="form-control" name="search_sku" placeholder="e.g., SKU123"
+                            value="{{ filters.search_sku }}">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Search by Name</label>
+                        <input type="text" class="form-control" name="search_name" placeholder="e.g., Coffee"
+                            value="{{ filters.search_name }}">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Category</label>
+                        <select class="form-control" name="filter_category">
+                            <option value="">All Categories</option>
+                            {% for cat in categories %}
+                            <option value="{{ cat }}" {% if filters.filter_category==cat %}selected{% endif %}>{{ cat }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Stock Status</label>
+                        <select class="form-control" name="filter_stock_status">
+                            <option value="">All Status</option>
+                            <option value="low" {% if filters.filter_stock_status=='low' %}selected{% endif %}>Low Stock
+                            </option>
+                            <option value="normal" {% if filters.filter_stock_status=='normal' %}selected{% endif %}>
+                                Normal Stock</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Active Status</label>
+                        <select class="form-control" name="filter_status">
+                            <option value="">All Status</option>
+                            <option value="1" {% if filters.filter_status=='1' %}selected{% endif %}>Active</option>
+                            <option value="0" {% if filters.filter_status=='0' %}selected{% endif %}>Inactive</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="row mt-2">
+                    <div class="col-md-2">
+                        <label class="form-label">Min Stock</label>
+                        <input type="number" class="form-control" name="min_stock" placeholder="Min"
+                            value="{{ filters.min_stock }}">
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label">Max Stock</label>
+                        <input type="number" class="form-control" name="max_stock" placeholder="Max"
+                            value="{{ filters.max_stock }}">
+                    </div>
+                    <div class="col-md-8">
+                        <label class="form-label">&nbsp;</label>
+                        <div>
+                            <button type="submit" class="btn btn-apply">Apply Filters</button>
+                            <a href="/inventory" class="btn btn-reset">Reset</a>
+                        </div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Results Count -->
+    <div class="results-info">
+        Showing <strong>{{ inventory|length }}</strong> inventory item(s)
+    </div>
+
+    <!-- Inventory Table -->
+    <div class="inventory-card">
+        <table class="table inventory-table" id="inventoryTable">
+            <thead>
+                <tr>
+                    <th style="width: 100px;">ID</th>
+                    <th>SKU</th>
+                    <th>Current Stock</th>
+                    <th>Threshold</th>
+                    <th>Low Stock</th>
+                    {% if current_user.role == 'superadmin' %}
+                    <th style="width: 250px;">Actions</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in inventory %}
+                <tr data-id="{{ item.id }}" {% if item.low_stock %}style="background-color: #ffebee;" {% endif %}>
+                    <td>
+                        <span class="inventory-id-badge">#{{ item.id }}</span>
+                    </td>
+                    <td>{{ item.sku }}</td>
+                    <td>{{ item.current_stock }}</td>
+                    <td>{{ item.threshold }}</td>
+                    <td>
+                        {% if item.low_stock %}
+                        <span class="badge bg-danger" style="font-size: 0.7em; margin-left: 5px;">LOW</span>
+                        {% endif %}
+                    </td>
+                    {% if current_user.role == 'superadmin' %}
+                    <td>
+                        <button class="btn btn-sm btn-view view-btn" data-id="{{ item.id }}">View</button>
+                        <button class="btn btn-sm btn-edit edit-btn" data-id="{{ item.id }}" data-bs-toggle="modal"
+                            data-bs-target="#editInventoryModal">Edit</button>
+                        <button class="btn btn-sm btn-delete delete-btn" data-id="{{ item.id }}">Delete</button>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="3" class="empty-state">
+                        <div>📦</div>
+                        <h5>No inventory items found</h5>
+                        <p>Start by adding your first inventory item</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Details Modal -->
+    <div class="modal fade" id="detailModalInv" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">📋 Inventory Details</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body" id="detailBodyInv">
+                    <div id="detailContentInv">Loading...</div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-modal-close" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-modal-edit" id="detailEditBtnInv">Edit</button>
+                    {% if current_user.role == 'superadmin' %}
+                    <button type="button" class="btn btn-modal-delete" id="detailDeleteBtnInv">Delete</button>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
 
     <!-- Modal for adding inventory -->
     <div class="modal fade" id="addInventoryModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Add Inventory</h5>
+                    <h5 class="modal-title">➕ Add Inventory</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
@@ -66,7 +535,12 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Current Stock</label>
-                            <input type="number" class="form-control" id="addCurrentStock" name="current_stock" required>
+                            <input type="number" class="form-control" id="addCurrentStock" name="current_stock"
+                                required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Threshold (Low Stock Alert)</label>
+                            <input type="number" class="form-control" name="threshold" value="10">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Unit</label>
@@ -83,7 +557,7 @@
                                 <option value="0">No</option>
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-primary">Save</button>
+                        <button type="submit" class="btn btn-save">💾 Save</button>
                     </form>
                 </div>
             </div>
@@ -95,7 +569,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Edit Inventory</h5>
+                    <h5 class="modal-title">✏️ Edit Inventory</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
@@ -115,15 +589,25 @@
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Current Stock</label>
-                            <input type="number" class="form-control" id="editCurrentStock" name="current_stock" required>
+                            <input type="number" class="form-control" id="editCurrentStock" name="current_stock"
+                                required>
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Threshold</label>
+                            <input type="number" class="form-control" id="editThreshold" name="threshold">
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Unit</label>
                             <input type="text" class="form-control" id="editUnit" name="unit" required>
                         </div>
                         <div class="mb-3">
+                            <label class="form-label">Supplier ID</label>
+                            <input type="number" class="form-control" id="editSupplierId" name="supplier_id">
+                        </div>
+                        <div class="mb-3">
                             <label class="form-label">Unit Cost</label>
-                            <input type="number" step="0.00001" class="form-control" id="editUnitCost" name="unit_cost" required>
+                            <input type="number" step="0.00001" class="form-control" id="editUnitCost" name="unit_cost"
+                                required>
                         </div>
                         <div class="mb-3">
                             <label class="form-label">Is Active</label>
@@ -132,7 +616,7 @@
                                 <option value="0">No</option>
                             </select>
                         </div>
-                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <button type="submit" class="btn btn-save">💾 Save Changes</button>
                     </form>
                 </div>
             </div>
@@ -144,76 +628,129 @@
 
 {% block extra_js %}
 <script>
-    $(document).ready(function() {
-        // 添加库存
-        $('#addInventoryForm').on('submit', function(e) {
+    $(document).ready(function () {
+        // Add inventory
+        $('#addInventoryForm').on('submit', function (e) {
             e.preventDefault();
             $.ajax({
                 url: '/inventory',
                 type: 'POST',
                 data: $(this).serialize(),
-                success: function(response) {
-                    alert('Inventory added!');
+                success: function (response) {
+                    alert('✅ Inventory added!');
                     location.reload();
                 },
-                error: function() {
-                    alert('Error adding inventory.');
+                error: function () {
+                    alert('❌ Error adding inventory.');
                 }
             });
         });
 
-        // 编辑库存
-        $('.edit-btn').on('click', function() {
+        // Edit inventory
+        $('.edit-btn').on('click', function () {
             const id = $(this).data('id');
-            $.get(`/inventory/${id}`, function(data) {
+            $.get(`/inventory/${id}`, function (data) {
                 $('#editInventoryId').val(data.id);
                 $('#editSku').val(data.sku);
                 $('#editStandardName').val(data.standard_name);
                 $('#editBrandName').val(data.brand_name);
                 $('#editCurrentStock').val(data.current_stock);
+                $('#editThreshold').val(data.threshold);
                 $('#editUnit').val(data.unit);
                 $('#editUnitCost').val(data.unit_cost);
                 $('#editIsActive').val(data.is_active);
+                $('#editSupplierId').val(data.supplier_id);
             });
         });
 
-        $('#editInventoryForm').on('submit', function(e) {
+        $('#editInventoryForm').on('submit', function (e) {
             e.preventDefault();
             const id = $('#editInventoryId').val();
             const formData = $(this).serialize();
-            console.log('Sending inventory update data:', formData);
             $.ajax({
                 url: `/inventory/${id}`,
                 type: 'PUT',
                 data: formData,
-                success: function(response) {
-                    console.log('Update success:', response);
-                    alert(response.message || 'Inventory updated!');
+                success: function (response) {
+                    alert('✅ ' + (response.message || 'Inventory updated!'));
                     location.reload();
                 },
-                error: function(xhr) {
-                    console.log('Update error:', xhr.status, xhr.responseText);
-                    alert('Error updating inventory: ' + xhr.responseText);
+                error: function (xhr) {
+                    alert('❌ Error updating inventory: ' + xhr.responseText);
                 }
             });
         });
 
-        // 删除库存
-        $('.delete-btn').on('click', function() {
-            if (confirm('Are you sure you want to delete this inventory item?')) {
+        // Delete inventory
+        $('.delete-btn').on('click', function () {
+            if (confirm('⚠️ Are you sure you want to delete this inventory item?')) {
                 const id = $(this).data('id');
                 $.ajax({
                     url: `/inventory/${id}`,
                     type: 'DELETE',
-                    success: function() {
-                        alert('Inventory deleted!');
+                    success: function () {
+                        alert('✅ Inventory deleted!');
                         location.reload();
                     },
-                    error: function() {
-                        alert('Error deleting inventory.');
+                    error: function () {
+                        alert('❌ Error deleting inventory.');
                     }
                 });
             }
+        });
+
+        // View details
+        function loadDetailsInv(id) {
+            $('#detailContentInv').text('Loading...');
+            $('#detailEditBtnInv').data('id', id);
+            $('#detailDeleteBtnInv').data('id', id);
+            $.get(`/inventory/${id}`, function (data) {
+                let html = '<table class="table table-sm">';
+                for (const k in data) {
+                    html += `<tr><th>${k}</th><td>${data[k]}</td></tr>`;
+                }
+                html += '</table>';
+                $('#detailContentInv').html(html);
+                $('#detailModalInv').modal('show');
+            }).fail(function () {
+                $('#detailContentInv').text('Failed to load details');
+            });
+        }
+
+        $('.view-btn').on('click', function () { loadDetailsInv($(this).data('id')); });
+
+        $('#detailEditBtnInv').on('click', function () {
+            const id = $(this).data('id');
+            $('#detailModalInv').modal('hide');
+            $.get(`/inventory/${id}`, function (data) {
+                $('#editInventoryId').val(data.id);
+                $('#editSku').val(data.sku);
+                $('#editStandardName').val(data.standard_name);
+                $('#editBrandName').val(data.brand_name);
+                $('#editCurrentStock').val(data.current_stock);
+                $('#editThreshold').val(data.threshold);
+                $('#editUnit').val(data.unit);
+                $('#editUnitCost').val(data.unit_cost);
+                $('#editSupplierId').val(data.supplier_id);
+                $('#editIsActive').val(data.is_active);
+                $('#editInventoryModal').modal('show');
+            });
+        });
+
+        $('#detailDeleteBtnInv').on('click', function () {
+            const id = $(this).data('id');
+            if (!confirm('⚠️ Delete this inventory item?')) return;
+            $.ajax({
+                url: `/inventory/${id}`,
+                type: 'DELETE',
+                success: function () {
+                    alert('✅ Inventory deleted!');
+                    location.reload();
+                },
+                error: function () {
+                    alert('❌ Error deleting inventory.');
+                }
+            });
         });
     });
 </script>

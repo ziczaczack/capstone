@@ -2,43 +2,521 @@
 
 {% block title %}Dashboard - Cafe Inventory{% endblock %}
 
+{% block extra_css %}
+<style>
+    .dashboard-container {
+        max-width: 1400px;
+        margin: 0 auto;
+        padding: 30px 20px;
+    }
+
+    .dashboard-header {
+        background-color: #6d4c41;
+        color: white;
+        padding: 40px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .dashboard-header h1 {
+        margin: 0 0 10px 0;
+        font-size: 2.5rem;
+        font-weight: 700;
+    }
+
+    .dashboard-header p {
+        margin: 0;
+        opacity: 0.9;
+        font-size: 1.1rem;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .stat-card {
+        background: white;
+        padding: 25px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        border-left: 4px solid #8d6e63;
+        transition: transform 0.2s ease, box-shadow 0.2s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    }
+
+    .stat-icon {
+        font-size: 2rem;
+        margin-bottom: 10px;
+    }
+
+    .stat-label {
+        font-size: 0.85rem;
+        color: #757575;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        font-weight: 600;
+        margin-bottom: 5px;
+    }
+
+    .stat-value {
+        font-size: 2rem;
+        font-weight: 700;
+        color: #6d4c41;
+    }
+
+    .chart-row {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+        gap: 20px;
+        margin-bottom: 30px;
+    }
+
+    .chart-card {
+        background: white;
+        padding: 25px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .chart-card h3 {
+        margin: 0 0 20px 0;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #5d4037;
+        border-bottom: 2px solid #efebe9;
+        padding-bottom: 10px;
+    }
+
+    .chart-card.full-width {
+        grid-column: 1 / -1;
+    }
+
+    .chart-container {
+        position: relative;
+        height: 300px;
+        width: 100%;
+    }
+
+    .table-card {
+        background: white;
+        padding: 25px;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    }
+
+    .table-card h3 {
+        margin: 0 0 20px 0;
+        font-size: 1.2rem;
+        font-weight: 600;
+        color: #5d4037;
+        border-bottom: 2px solid #efebe9;
+        padding-bottom: 10px;
+    }
+
+    .dashboard-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 10px;
+    }
+
+    .dashboard-table thead {
+        background-color: #efebe9;
+    }
+
+    .dashboard-table thead th {
+        padding: 12px 15px;
+        text-align: left;
+        font-size: 0.8rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        color: #5d4037;
+        border: none;
+    }
+
+    .dashboard-table tbody tr {
+        border-bottom: 1px solid #f5f5f5;
+        transition: background-color 0.2s ease;
+    }
+
+    .dashboard-table tbody tr:hover {
+        background-color: #fafafa;
+    }
+
+    .dashboard-table tbody td {
+        padding: 12px 15px;
+        color: #424242;
+        font-size: 0.9rem;
+    }
+
+    .alert-success-custom {
+        background-color: #e8f5e9;
+        color: #2e7d32;
+        padding: 15px 20px;
+        border-radius: 6px;
+        border-left: 4px solid #4caf50;
+    }
+
+    .alert-info-custom {
+        background-color: #e3f2fd;
+        color: #1565c0;
+        padding: 15px 20px;
+        border-radius: 6px;
+        border-left: 4px solid #2196f3;
+    }
+
+    .forecast-description {
+        font-size: 0.85rem;
+        color: #757575;
+        margin-bottom: 15px;
+    }
+
+    .loading-state {
+        text-align: center;
+        padding: 20px;
+        color: #9e9e9e;
+        font-style: italic;
+    }
+
+    #forecastTableContainer {
+        max-height: 400px;
+        overflow-y: auto;
+        overflow-x: auto;
+    }
+
+    #forecastTableContainer .dashboard-table {
+        margin: 0;
+        font-size: 0.85rem;
+    }
+
+    #forecastTableContainer .dashboard-table th,
+    #forecastTableContainer .dashboard-table td {
+        padding: 10px 8px;
+        white-space: nowrap;
+    }
+
+    .top-sellers-container {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+
+    .low-stock-container {
+        max-height: 300px;
+        overflow-y: auto;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container">
-    <div class="row mb-4">
-        <div class="col-md-12">
-            <h1>Welcome to Dashboard</h1>
-            <p class="lead">Manage your cafe inventory here.</p>
+<div class="dashboard-container">
+    <!-- Header -->
+    <div class="dashboard-header">
+        <h1>☕ Dashboard</h1>
+        <p>Welcome back! Here's your cafe inventory overview</p>
+    </div>
+
+    <!-- Quick Stats -->
+    <div class="stats-grid">
+        <div class="stat-card">
+            <div class="stat-icon">🏷️</div>
+            <div class="stat-label">Categories</div>
+            <div class="stat-value">{{ inv_by_category|length }}</div>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon">⚠️</div>
+            <div class="stat-label">Low Stock Items</div>
+            <div class="stat-value">{{ low_inventory_items|length }}</div>
         </div>
     </div>
 
-    <h2 class="mt-5">Lowest Inventory Items</h2>
-    {% if low_inventory_items %}
-    <table class="table table-striped">
-        <thead>
-            <tr>
-                <th>SKU</th>
-                <th>Standard Name</th>
-                <th>Current Stock</th>
-                <th>Threshold</th>
-                <th>Ratio (Current / Threshold)</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for item in low_inventory_items %}
-            <tr class="table-danger">
-                <td>{{ item.sku }}</td>
-                <td>{{ item.standard_name }}</td>
-                <td>{{ item.current_stock }}</td>
-                <td>{{ item.threshold }}</td>
-                <td><span class="badge bg-danger">{{ item.ratio | round(2) }}</span></td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
-    {% else %}
-    <div class="alert alert-success">
-        <i class="bi bi-check-circle"></i> No low-stock items currently. Everything is well stocked!
+    <!-- Charts Row 1 -->
+    <div class="chart-row">
+        <div class="chart-card">
+            <h3>Inventory by Category</h3>
+            <div class="chart-container">
+                <canvas id="invByCatChart"></canvas>
+            </div>
+        </div>
+        <div class="chart-card">
+            <h3>Value Distribution</h3>
+            <div class="chart-container">
+                <canvas id="valueByCatChart"></canvas>
+            </div>
+        </div>
     </div>
-    {% endif %}
+
+    <!-- Sales Trend -->
+    <div class="chart-row">
+        <div class="chart-card full-width">
+            <h3>Sales Trend (Last 30 Days)</h3>
+            <div class="chart-container">
+                <canvas id="salesTrendChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <!-- Forecast Section -->
+    <div class="chart-row">
+        <div class="chart-card" style="grid-column: span 2;">
+            <h3>Inventory Forecast</h3>
+            <p class="forecast-description">Estimated days until stockout based on moving average sales data</p>
+            <div class="chart-container">
+                <canvas id="forecastChart"></canvas>
+            </div>
+        </div>
+        <div class="table-card">
+            <h3>At-Risk Items</h3>
+            <div class="d-flex justify-content-between align-items-center mb-3">
+                <h5 class="mb-0">Top 5 At-Risk Items</h5>
+                <a href="/export/forecast" class="btn btn-sm btn-outline-secondary">📥 Export Full Forecast CSV</a>
+            </div>
+            <div id="forecastTableContainer">Loading...</div>
+        </div>
+    </div>
+
+    <!-- Tables Row -->
+    <div class="chart-row">
+        <div class="table-card">
+            <h3>Low Stock Items</h3>
+            {% if low_inventory_items %}
+            <div class="low-stock-container">
+                <table class="dashboard-table">
+                    <thead>
+                        <tr>
+                            <th>SKU</th>
+                            <th>Name</th>
+                            <th>Stock</th>
+                            <th>Threshold</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for item in low_inventory_items %}
+                        <tr>
+                            <td><strong>{{ item.sku }}</strong></td>
+                            <td>{{ item.standard_name }}</td>
+                            <td>{{ item.current_stock }}</td>
+                            <td>{{ item.threshold }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert-success-custom">
+                No low-stock items currently. Everything is well stocked!
+            </div>
+            {% endif %}
+        </div>
+
+        <div class="table-card">
+            <h3>Top Selling Products</h3>
+            {% if top_sellers %}
+            <div class="top-sellers-container">
+                <table class="dashboard-table">
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Units Sold</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in top_sellers %}
+                        <tr>
+                            <td><strong>{{ product.product_name }}</strong></td>
+                            <td>{{ product.sold }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert-info-custom">
+                No sales data available yet.
+            </div>
+            {% endif %}
+        </div>
+    </div>
 </div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    // Data from backend
+    const invByCat = {{ inv_by_category| tojson }};
+    const valueByCat = {{ value_by_category| tojson }};
+    const salesTrend = {{ sales_trend| tojson }};
+
+    // Brown color palette
+    const brownColors = {
+        primary: '#8d6e63',
+        secondary: '#a1887f',
+        tertiary: '#bcaaa4',
+        accent: '#6d4c41',
+        light: '#d7ccc8'
+    };
+
+    // Inventory by Category - Bar Chart
+    new Chart(document.getElementById('invByCatChart'), {
+        type: 'bar',
+        data: {
+            labels: invByCat.map(r => r.category || 'Uncategorized'),
+            datasets: [{
+                label: 'Stock Quantity',
+                data: invByCat.map(r => r.total_stock || 0),
+                backgroundColor: brownColors.primary,
+                borderColor: brownColors.accent,
+                borderWidth: 1,
+                borderRadius: 4
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+
+    // Value Distribution - Doughnut Chart
+    new Chart(document.getElementById('valueByCatChart'), {
+        type: 'doughnut',
+        data: {
+            labels: valueByCat.map(r => r.category || 'Uncategorized'),
+            datasets: [{
+                data: valueByCat.map(r => Math.round(r.value || 0)),
+                backgroundColor: [
+                    '#8d6e63',
+                    '#a1887f',
+                    '#bcaaa4',
+                    '#d7ccc8',
+                    '#6d4c41',
+                    '#5d4037'
+                ],
+                borderColor: '#fff',
+                borderWidth: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: {
+                    position: 'bottom'
+                }
+            }
+        }
+    });
+
+    // Sales Trend - Line Chart
+    new Chart(document.getElementById('salesTrendChart'), {
+        type: 'line',
+        data: {
+            labels: salesTrend.map(r => r.day),
+            datasets: [{
+                label: 'Units Sold',
+                data: salesTrend.map(r => r.sold || 0),
+                fill: true,
+                borderColor: brownColors.primary,
+                backgroundColor: 'rgba(141, 110, 99, 0.1)',
+                tension: 0.4,
+                borderWidth: 3,
+                pointBackgroundColor: brownColors.accent,
+                pointBorderColor: '#fff',
+                pointBorderWidth: 2,
+                pointRadius: 5,
+                pointHoverRadius: 7
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: { beginAtZero: true }
+            }
+        }
+    });
+
+    // Forecast Chart
+    fetch('/forecast?window=30')
+        .then(r => r.json())
+        .then(data => {
+            const items = data.items || [];
+            const labels = items.map(i => i.name || i.sku);
+            const days = items.map(i => i.days_until_stockout == null ? null : i.days_until_stockout);
+            const avgUsage = items.map(i => i.avg_daily_usage || 0);
+
+            new Chart(document.getElementById('forecastChart'), {
+                type: 'bar',
+                data: {
+                    labels: labels,
+                    datasets: [
+                        {
+                            label: 'Days Until Stockout',
+                            data: days,
+                            backgroundColor: '#d32f2f',
+                            borderRadius: 4
+                        },
+                        {
+                            label: 'Avg Daily Usage',
+                            data: avgUsage,
+                            backgroundColor: brownColors.primary,
+                            borderRadius: 4
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: { y: { beginAtZero: true } },
+                    plugins: {
+                        tooltip: { mode: 'index', intersect: false }
+                    }
+                }
+            });
+
+            // At-Risk Items Table
+            const tableContainer = document.getElementById('forecastTableContainer');
+            if (!items.length) {
+                tableContainer.innerHTML = '<div class="alert-info-custom">ℹ️ No forecast data available.</div>';
+                return;
+            }
+
+            let html = '<table class="dashboard-table"><thead><tr>';
+            html += '<th>SKU</th><th>Name</th><th>Avg/day</th><th>Current</th><th>Days Left</th>';
+            html += '</tr></thead><tbody>';
+
+            items.slice(0, 5).forEach(it => {
+                html += `<tr>`;
+                html += `<td><strong>${it.sku}</strong></td>`;
+                html += `<td>${it.name}</td>`;
+                html += `<td>${it.avg_daily_usage}</td>`;
+                html += `<td>${it.current_stock ?? 'N/A'}</td>`;
+                html += `<td>${it.days_until_stockout ?? 'N/A'}</td>`;
+                html += `</tr>`;
+            });
+
+            html += '</tbody></table>';
+            tableContainer.innerHTML = html;
+        })
+        .catch(err => {
+            document.getElementById('forecastTableContainer').innerHTML =
+                '<div class="alert-info-custom">Forecast load failed.</div>';
+            console.error('Forecast error', err);
+        });
+</script>
+
 {% endblock %}

@@ -2,42 +2,363 @@
 
 {% block title %}Suppliers - Cafe Inventory{% endblock %}
 
+{% block extra_css %}
+<style>
+    .suppliers-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 30px 20px;
+    }
+
+    .page-header {
+        background-color: #6d4c41;
+        color: white;
+        padding: 30px 40px;
+        border-radius: 8px;
+        margin-bottom: 30px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    .page-header h1 {
+        margin: 0;
+        font-size: 2rem;
+        font-weight: 600;
+    }
+
+    .supplier-count {
+        background-color: rgba(255, 255, 255, 0.2);
+        padding: 6px 14px;
+        border-radius: 15px;
+        font-weight: 600;
+        display: inline-block;
+        margin-left: 12px;
+        font-size: 0.9rem;
+    }
+
+    .action-bar {
+        margin-bottom: 20px;
+    }
+
+    .btn-add-supplier {
+        background-color: #8d6e63;
+        border: none;
+        padding: 10px 24px;
+        font-weight: 600;
+        border-radius: 6px;
+        color: white;
+        transition: background-color 0.2s ease;
+    }
+
+    .btn-add-supplier:hover {
+        background-color: #6d4c41;
+        color: white;
+    }
+
+    .suppliers-card {
+        background: white;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        overflow: hidden;
+    }
+
+    .suppliers-table {
+        margin: 0;
+        width: 100%;
+    }
+
+    .suppliers-table thead {
+        background-color: #efebe9;
+    }
+
+    .suppliers-table thead th {
+        padding: 16px 20px;
+        font-weight: 600;
+        text-transform: uppercase;
+        font-size: 0.8rem;
+        letter-spacing: 0.5px;
+        color: #5d4037;
+        border: none;
+    }
+
+    .suppliers-table tbody tr.supplier-row {
+        transition: background-color 0.2s ease;
+        border-bottom: 1px solid #f5f5f5;
+        cursor: pointer;
+    }
+
+    .suppliers-table tbody tr.supplier-row:hover {
+        background-color: #fafafa;
+    }
+
+    .suppliers-table tbody td {
+        padding: 18px 20px;
+        vertical-align: middle;
+        color: #424242;
+    }
+
+    .supplier-id-badge {
+        display: inline-block;
+        background-color: #8d6e63;
+        color: white;
+        padding: 5px 12px;
+        border-radius: 4px;
+        font-weight: 600;
+        font-size: 0.85rem;
+    }
+
+    .company-name-cell {
+        font-weight: 600;
+        color: #424242;
+    }
+
+    .expand-icon {
+        display: inline-block;
+        transition: transform 0.3s ease;
+        margin-right: 8px;
+        color: #8d6e63;
+        font-weight: bold;
+    }
+
+    .expand-icon.expanded {
+        transform: rotate(90deg);
+    }
+
+    .btn-edit {
+        background-color: #a1887f;
+        border: none;
+        padding: 7px 16px;
+        border-radius: 4px;
+        font-weight: 600;
+        color: white;
+        font-size: 0.85rem;
+        transition: background-color 0.2s ease;
+    }
+
+    .btn-edit:hover {
+        background-color: #8d6e63;
+        color: white;
+    }
+
+    .btn-delete {
+        background-color: #d32f2f;
+        border: none;
+        padding: 7px 16px;
+        border-radius: 4px;
+        font-weight: 600;
+        color: white;
+        font-size: 0.85rem;
+        transition: background-color 0.2s ease;
+    }
+
+    .btn-delete:hover {
+        background-color: #c62828;
+        color: white;
+    }
+
+    /* Expandable inventory details row */
+    .inventory-details-row {
+        display: none;
+        background-color: #f9f9f9;
+    }
+
+    .inventory-details-row.show {
+        display: table-row;
+    }
+
+    .inventory-details-cell {
+        padding: 20px !important;
+        border-top: 2px solid #d7ccc8 !important;
+    }
+
+    .inventory-items-table {
+        width: 100%;
+        margin: 0;
+        background: white;
+        border-radius: 6px;
+        overflow: hidden;
+        box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .inventory-items-table thead {
+        background-color: #d7ccc8;
+    }
+
+    .inventory-items-table thead th {
+        padding: 12px 15px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        text-transform: uppercase;
+        color: #4e342e;
+        border: none;
+    }
+
+    .inventory-items-table tbody td {
+        padding: 12px 15px;
+        font-size: 0.9rem;
+        border-bottom: 1px solid #efebe9;
+    }
+
+    .inventory-items-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+
+    .no-inventory-message {
+        text-align: center;
+        padding: 30px;
+        color: #9e9e9e;
+        font-style: italic;
+    }
+
+    .modal-content {
+        border: none;
+        border-radius: 8px;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .modal-header {
+        background-color: #6d4c41;
+        color: white;
+        border-radius: 8px 8px 0 0;
+        padding: 20px 25px;
+        border: none;
+    }
+
+    .modal-header .modal-title {
+        font-weight: 600;
+        font-size: 1.3rem;
+    }
+
+    .modal-header .btn-close {
+        filter: brightness(0) invert(1);
+        opacity: 0.8;
+    }
+
+    .modal-body {
+        padding: 25px;
+    }
+
+    .form-label {
+        font-weight: 600;
+        color: #5d4037;
+        margin-bottom: 6px;
+        font-size: 0.9rem;
+    }
+
+    .form-control {
+        border: 1px solid #d7ccc8;
+        border-radius: 4px;
+        padding: 10px 12px;
+        font-size: 0.95rem;
+        transition: border-color 0.2s ease;
+    }
+
+    .form-control:focus {
+        border-color: #8d6e63;
+        box-shadow: 0 0 0 2px rgba(141, 110, 99, 0.1);
+    }
+
+    .btn-save {
+        background-color: #8d6e63;
+        border: none;
+        padding: 10px 24px;
+        font-weight: 600;
+        border-radius: 4px;
+        color: white;
+        transition: background-color 0.2s ease;
+    }
+
+    .btn-save:hover {
+        background-color: #6d4c41;
+        color: white;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 60px 20px;
+        color: #9e9e9e;
+    }
+</style>
+{% endblock %}
+
 {% block content %}
-<div class="container-fluid">
-    <h1>Suppliers</h1>
-    <button class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#addSupplierModal">Add Supplier</button>
-    <table class="table">
-        <thead>
-            <tr>
-                <th>ID</th>
-                <th>Company Name</th>
-                <th>Contact Person</th>
-                <th>Phone</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            {% for supplier in suppliers %}
-            <tr>
-                <td>{{ supplier.id }}</td>
-                <td>{{ supplier.company_name }}</td>
-                <td>{{ supplier.contact_person }}</td>
-                <td>{{ supplier.phone }}</td>
-                <td>
-                    <button class="btn btn-warning btn-sm edit-btn" data-id="{{ supplier.id }}" data-bs-toggle="modal" data-bs-target="#editSupplierModal">Edit</button>
-                    <button class="btn btn-danger btn-sm delete-btn" data-id="{{ supplier.id }}">Delete</button>
-                </td>
-            </tr>
-            {% endfor %}
-        </tbody>
-    </table>
+<div class="suppliers-container">
+    <div class="page-header">
+        <h1>
+            🏢 Suppliers
+            <span class="supplier-count">{{ suppliers|length }} Suppliers</span>
+        </h1>
+    </div>
+
+    {% if current_user.role == 'superadmin' %}
+    <div class="action-bar">
+        <button class="btn btn-primary btn-add-supplier" data-bs-toggle="modal" data-bs-target="#addSupplierModal">
+            ➕ Add Supplier
+        </button>
+    </div>
+    {% endif %}
+
+    <div class="suppliers-card">
+        <table class="table suppliers-table">
+            <thead>
+                <tr>
+                    <th style="width: 100px;">ID</th>
+                    <th>Company Name</th>
+                    <th>Contact Person</th>
+                    <th>Phone</th>
+                    {% if current_user.role == 'superadmin' %}
+                    <th style="width: 200px;">Actions</th>
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for supplier in suppliers %}
+                <tr class="supplier-row" data-supplier-id="{{ supplier.id }}">
+                    <td>
+                        <span class="expand-icon">▶</span>
+                        <span class="supplier-id-badge">#{{ supplier.id }}</span>
+                    </td>
+                    <td class="company-name-cell">{{ supplier.company_name }}</td>
+                    <td>{{ supplier.contact_person }}</td>
+                    <td>{{ supplier.phone }}</td>
+                    {% if current_user.role == 'superadmin' %}
+                    <td onclick="event.stopPropagation();">
+                        <button class="btn btn-sm btn-edit edit-btn" data-id="{{ supplier.id }}" data-bs-toggle="modal"
+                            data-bs-target="#editSupplierModal">Edit</button>
+                        <button class="btn btn-sm btn-delete delete-btn" data-id="{{ supplier.id }}">Delete</button>
+                    </td>
+                    {% endif %}
+                </tr>
+                <tr class="inventory-details-row" id="details-{{ supplier.id }}">
+                    <td colspan="5" class="inventory-details-cell">
+                        <div class="inventory-details-content">
+                            <h6 style="color: #5d4037; font-weight: 600; margin-bottom: 15px;">📦 Inventory Items</h6>
+                            <div id="inventory-list-{{ supplier.id }}">
+                                <div style="text-align: center; padding: 20px; color: #9e9e9e;">
+                                    Loading...
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="5" class="empty-state">
+                        <div>🏢</div>
+                        <h5>No suppliers found</h5>
+                        <p>Start by adding your first supplier</p>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
 
     <!-- Add Modal -->
     <div class="modal fade" id="addSupplierModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Add Supplier</h5>
+                    <h5 class="modal-title">➕ Add Supplier</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
                 </div>
                 <div class="modal-body">
@@ -54,13 +375,14 @@
                             <label class="form-label">Phone</label>
                             <input type="text" class="form-control" name="phone">
                         </div>
-                        <button type="submit" class="btn btn-primary">Save</button>
+                        <button type="submit" class="btn btn-save">💾 Save</button>
                     </form>
                 </div>
             </div>
         </div>
     </div>
 
+    <!-- Edit Modal -->
     <div class="modal fade" id="editSupplierModal" tabindex="-1">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -83,7 +405,7 @@
                             <label class="form-label">Phone</label>
                             <input type="text" class="form-control" id="editPhone" name="phone">
                         </div>
-                        <button type="submit" class="btn btn-primary">Save Changes</button>
+                        <button type="submit" class="btn btn-save">💾 Save Changes</button>
                     </form>
                 </div>
             </div>
@@ -95,28 +417,89 @@
 
 {% block extra_js %}
 <script>
-    $(document).ready(function() {
-        // 添加供应商
-        $('#addSupplierForm').on('submit', function(e) {
+    $(document).ready(function () {
+        // Toggle expandable inventory details
+        $('.supplier-row').on('click', function () {
+            const supplierId = $(this).data('supplier-id');
+            const detailsRow = $(`#details-${supplierId}`);
+            const expandIcon = $(this).find('.expand-icon');
+
+            // Toggle the row
+            detailsRow.toggleClass('show');
+            expandIcon.toggleClass('expanded');
+
+            // Load inventory items if not already loaded
+            if (detailsRow.hasClass('show') && !detailsRow.data('loaded')) {
+                loadInventoryItems(supplierId);
+                detailsRow.data('loaded', true);
+            }
+        });
+
+        // Load inventory items for a supplier
+        function loadInventoryItems(supplierId) {
+            const container = $(`#inventory-list-${supplierId}`);
+
+            $.ajax({
+                url: `/suppliers/${supplierId}/inventory`,
+                type: 'GET',
+                success: function (items) {
+                    if (items.length === 0) {
+                        container.html('<div class="no-inventory-message">No inventory items found for this supplier</div>');
+                    } else {
+                        let html = '<table class="inventory-items-table">';
+                        html += '<thead><tr>';
+                        html += '<th>SKU</th>';
+                        html += '<th>Name</th>';
+                        html += '<th>Brand</th>';
+                        html += '<th>Stock</th>';
+                        html += '<th>Unit</th>';
+                        html += '<th>Cost</th>';
+                        html += '<th>Status</th>';
+                        html += '</tr></thead><tbody>';
+
+                        items.forEach(item => {
+                            html += '<tr>';
+                            html += `<td><strong>${item.sku}</strong></td>`;
+                            html += `<td>${item.standard_name || 'N/A'}</td>`;
+                            html += `<td>${item.brand_name || 'N/A'}</td>`;
+                            html += `<td>${item.current_stock || 0}</td>`;
+                            html += `<td>${item.unit || 'N/A'}</td>`;
+                            html += `<td>$${parseFloat(item.unit_cost || 0).toFixed(2)}</td>`;
+                            html += `<td>${item.is_active ? '<span style="color: #28a745;">●</span> Active' : '<span style="color: #dc3545;">●</span> Inactive'}</td>`;
+                            html += '</tr>';
+                        });
+
+                        html += '</tbody></table>';
+                        container.html(html);
+                    }
+                },
+                error: function () {
+                    container.html('<div class="no-inventory-message" style="color: #d32f2f;">Error loading inventory items</div>');
+                }
+            });
+        }
+
+        // Add supplier
+        $('#addSupplierForm').on('submit', function (e) {
             e.preventDefault();
             $.ajax({
                 url: '/suppliers',
                 type: 'POST',
                 data: $(this).serialize(),
-                success: function(response) {
-                    alert('Supplier added!');
+                success: function (response) {
+                    alert('✅ Supplier added!');
                     location.reload();
                 },
-                error: function() {
-                    alert('Error adding supplier.');
+                error: function () {
+                    alert('❌ Error adding supplier.');
                 }
             });
         });
 
-        // 编辑供应商
-        $('.edit-btn').on('click', function() {
+        // Edit supplier - load data
+        $('.edit-btn').on('click', function () {
             const id = $(this).data('id');
-            $.get(`/suppliers/${id}`, function(data) {
+            $.get(`/suppliers/${id}`, function (data) {
                 $('#editSupplierId').val(data.id);
                 $('#editCompanyName').val(data.company_name);
                 $('#editContactName').val(data.contact_person);
@@ -124,43 +507,38 @@
             });
         });
 
-        $('#editSupplierForm').on('submit', function(e) {
+        // Edit supplier - submit
+        $('#editSupplierForm').on('submit', function (e) {
             e.preventDefault();
             const id = $('#editSupplierId').val();
             const formData = $(this).serialize();
-            console.log('Sending update data:', formData);
             $.ajax({
                 url: `/suppliers/${id}`,
                 type: 'PUT',
                 data: formData,
-                success: function(response) {
-                    console.log('Update success:', response);
-                    alert(response.message || 'Supplier updated!');
+                success: function (response) {
+                    alert('✅ ' + (response.message || 'Supplier updated!'));
                     location.reload();
                 },
-                error: function(xhr) {
-                    console.log('Update error:', xhr.status, xhr.responseText);
-                    alert('Error updating supplier: ' + xhr.responseText);
+                error: function (xhr) {
+                    alert('❌ Error updating supplier: ' + xhr.responseText);
                 }
             });
         });
 
-        // 删除供应商
-        $('.delete-btn').on('click', function() {
-            if (confirm('Are you sure you want to delete this supplier?')) {
+        // Delete supplier
+        $('.delete-btn').on('click', function () {
+            if (confirm('⚠️ Are you sure you want to delete this supplier?')) {
                 const id = $(this).data('id');
-                console.log('Deleting supplier id:', id);
                 $.ajax({
-                    url: `/suppliers/${id}`, 
+                    url: `/suppliers/${id}`,
                     type: 'DELETE',
-                    success: function(response) {
-                        console.log('Delete success:', response);
-                        alert(response.message || 'Supplier deleted!');
+                    success: function (response) {
+                        alert('✅ ' + (response.message || 'Supplier deleted!'));
                         location.reload();
                     },
-                    error: function(xhr) {
-                        console.log('Delete error:', xhr.status, xhr.responseText);
-                        alert('Error deleting supplier: ' + xhr.responseText);
+                    error: function (xhr) {
+                        alert('❌ Error deleting supplier: ' + xhr.responseText);
                     }
                 });
             }

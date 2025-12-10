@@ -1,6 +1,6 @@
 import sqlite3
 
-conn = sqlite3.connect('cafe_inventory - Copy.db')  # 替换为你的数据库路径
+conn = sqlite3.connect('cafe_inventory - Copy.db')  # Replace with your database path
 cursor = conn.cursor()
 
 cursor.execute("""

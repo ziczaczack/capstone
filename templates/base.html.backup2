@@ -84,38 +84,16 @@
     <!-- Navigation Bar with User Profile -->
     <nav class="navbar navbar-expand-lg navbar-custom">
         <div class="container-fluid">
-            <a class="navbar-brand" href="/"><img src="/static/images/logo.png" alt="Logo"> Cafe Inventory</a>
-
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <div class="navbar-nav">
-                    <a class="nav-link" href="/products">Products</a>
-                    <a class="nav-link" href="/inventory">Inventory</a>
-                    <a class="nav-link" href="/recipes">Recipes</a>
-                    <a class="nav-link" href="/suppliers">Suppliers</a>
-                    <a class="nav-link" href="/transactions">Transactions</a>
-                    {% if current_user.is_authenticated and current_user.role == 'superadmin' %}
-                    <a class="nav-link" href="/users">User Management</a>
-                    {% endif %}
-                </div>
-
-                <!-- User Profile Section -->
-                <div class="user-profile-section">
-                    {% if current_user.is_authenticated %}
-                    <div class="user-info">
-                        <div class="username">{{ current_user.username }}</div>
-                        <span class="role-badge {{ current_user.role.lower() }}">{{ current_user.role }}</span>
-                    </div>
-                    <a href="/profile" class="btn btn-outline-secondary btn-sm" title="View Profile">👤</a>
-                    <a href="/logout" class="btn btn-outline-danger btn-sm">Logout</a>
-                    {% else %}
-                    <a href="/login" class="btn btn-primary btn-sm">Login</a>
-                    {% endif %}
-                </div>
-            </div>
+            <div class="username">{{ current_user.username }}</div>
+            <span class="role-badge {{ current_user.role.lower() }}">{{ current_user.role }}</span>
+        </div>
+        <a href="/profile" class="btn btn-outline-secondary btn-sm" title="View Profile">👤</a>
+        <a href="/logout" class="btn btn-outline-danger btn-sm">Logout</a>
+        {% else %}
+        <a href="/login" class="btn btn-primary btn-sm">Login</a>
+        {% endif %}
+        </div>
+        </div>
         </div>
     </nav>
 
